@@ -50,13 +50,7 @@
       <version>1.0.0.Beta6</version>
       <scope>test</scope>
     </dependency>    
-<!--     <dependency>
-      <groupId>org.jboss.ironjacamar</groupId>
-      <artifactId>ironjacamar-core-spi</artifactId>
-      <version>1.0.0.Beta6</version>
-      <scope>test</scope>
-    </dependency>
- -->    <dependency>
+    <dependency>
       <groupId>org.jboss.ironjacamar</groupId>
       <artifactId>ironjacamar-deployers-common</artifactId>
       <version>1.0.0.Beta6</version>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector xmlns="http://java.sun.com/xml/ns/j2ee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+           http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd"
+           version="1.5">
+
+   <vendor-name>Red Hat Middleware LLC</vendor-name>
+   <eis-type>Test RA</eis-type>
+   <resourceadapter-version>0.1</resourceadapter-version>
+   <resourceadapter>
+      <resourceadapter-class>org.netoprise.neo4j.Neo4jResourceAdapter</resourceadapter-class>
+      <config-property>
+         <config-property-name>dir</config-property-name>
+         <config-property-type>java.lang.String</config-property-type>
+         <config-property-value>"/var/graphdb"</config-property-value>
+      </config-property>
+
+      <outbound-resourceadapter>
+         <connection-definition>
+            <managedconnectionfactory-class>org.netoprise.neo4j.Neo4jManagedConnectionFactory</managedconnectionfactory-class>
+            <config-property>
+               <config-property-name>dbdir</config-property-name>
+               <config-property-type>java.lang.String</config-property-type>
+               <config-property-value>"/var/graphdb"</config-property-value>
+            </config-property>
+
+            <connectionfactory-interface>org.netoprise.neo4j.Neo4jConnectionFactory</connectionfactory-interface>
+            <connectionfactory-impl-class>org.netoprise.neo4j.Neo4jConnectionFactoryImpl</connectionfactory-impl-class>
+            <connection-interface>org.netoprise.neo4j.Neo4jConnection</connection-interface>
+            <connection-impl-class>org.netoprise.neo4j.Neo4jConnectionImpl</connection-impl-class>
+         </connection-definition>
+         <transaction-support>LocalTransaction</transaction-support>
+         <reauthentication-support>false</reauthentication-support>
+      </outbound-resourceadapter>
+   </resourceadapter>
+</connector>
