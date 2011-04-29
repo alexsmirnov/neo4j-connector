@@ -85,7 +85,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
     */
    public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException
    {
-      log.finest("createConnectionFactory()");
+      log.info("createConnectionFactory()");
       return new Neo4jCciConnectionFactory(cxManager);
    }
 
@@ -111,7 +111,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
    public ManagedConnection createManagedConnection(Subject subject,
          ConnectionRequestInfo cxRequestInfo) throws ResourceException
    {
-      log.finest("createManagedConnection()");
+      log.info("createManagedConnection()");
       return new Neo4jManagedConnection(this);
    }
 
@@ -127,7 +127,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
    public ManagedConnection matchManagedConnections(Set connectionSet,
          Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException
    {
-      log.finest("matchManagedConnections()");
+      log.info("matchManagedConnections()");
       ManagedConnection result = null;
       Iterator it = connectionSet.iterator();
       while (result == null && it.hasNext())
@@ -150,7 +150,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
     */
    public PrintWriter getLogWriter() throws ResourceException
    {
-      log.finest("getLogWriter()");
+      log.info("getLogWriter()");
       return logwriter;
    }
 
@@ -162,7 +162,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
     */
    public void setLogWriter(PrintWriter out) throws ResourceException
    {
-      log.finest("setLogWriter()");
+      log.info("setLogWriter()");
       logwriter = out;
    }
 
@@ -173,7 +173,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
     */
    public ResourceAdapter getResourceAdapter()
    {
-      log.finest("getResourceAdapter()");
+      log.info("getResourceAdapter()");
       return ra;
    }
 
@@ -184,7 +184,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
     */
    public void setResourceAdapter(ResourceAdapter ra)
    {
-      log.finest("setResourceAdapter()");
+      log.info("setResourceAdapter()");
       this.ra = ra;
    }
 

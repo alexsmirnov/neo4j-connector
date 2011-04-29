@@ -53,7 +53,7 @@ public class Neo4jManagedConnectionMetaData implements ManagedConnectionMetaData
     */
    public String getEISProductName() throws ResourceException
    {
-      log.finest("getEISProductName()");
+      log.info("getEISProductName()");
       return null; //TODO
    }
 
@@ -65,7 +65,7 @@ public class Neo4jManagedConnectionMetaData implements ManagedConnectionMetaData
     */
    public String getEISProductVersion() throws ResourceException
    {
-      log.finest("getEISProductVersion()");
+      log.info("getEISProductVersion()");
       return null; //TODO
    }
 
@@ -77,7 +77,7 @@ public class Neo4jManagedConnectionMetaData implements ManagedConnectionMetaData
     */
    public int getMaxConnections() throws ResourceException
    {
-      log.finest("getMaxConnections()");
+      log.info("getMaxConnections()");
       return 0; //TODO
    }
 
@@ -89,7 +89,7 @@ public class Neo4jManagedConnectionMetaData implements ManagedConnectionMetaData
     */
    public String getUserName() throws ResourceException
    {
-      log.finest("getUserName()");
+      log.info("getUserName()");
       return null; //TODO
    }
 

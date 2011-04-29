@@ -87,7 +87,7 @@ public class Neo4jManagedConnection implements ManagedConnection
    public Object getConnection(Subject subject,
       ConnectionRequestInfo cxRequestInfo) throws ResourceException
    {
-      log.finest("getConnection()");
+      log.info("getConnection()");
       connection = new Neo4jCciConnection(this, mcf);
       return connection;
    }
@@ -101,7 +101,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public void associateConnection(Object connection) throws ResourceException
    {
-      log.finest("associateConnection()");
+      log.info("associateConnection()");
    }
 
    /**
@@ -112,7 +112,7 @@ public class Neo4jManagedConnection implements ManagedConnection
    public void cleanup() throws ResourceException
 
    {
-      log.finest("cleanup()");
+      log.info("cleanup()");
    }
 
    /**
@@ -122,7 +122,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public void destroy() throws ResourceException
    {
-      log.finest("destroy()");
+      log.info("destroy()");
    }
 
    /**
@@ -132,7 +132,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public void addConnectionEventListener(ConnectionEventListener listener)
    {
-      log.finest("addConnectionEventListener()");
+      log.info("addConnectionEventListener()");
       if (listener == null)
          throw new IllegalArgumentException("Listener is null");
       listeners.add(listener);
@@ -145,7 +145,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public void removeConnectionEventListener(ConnectionEventListener listener)
    {
-      log.finest("removeConnectionEventListener()");
+      log.info("removeConnectionEventListener()");
       if (listener == null)
          throw new IllegalArgumentException("Listener is null");
       listeners.remove(listener);
@@ -175,7 +175,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public PrintWriter getLogWriter() throws ResourceException
    {
-      log.finest("getLogWriter()");
+      log.info("getLogWriter()");
       return logwriter;
    }
 
@@ -187,7 +187,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public void setLogWriter(PrintWriter out) throws ResourceException
    {
-      log.finest("setLogWriter()");
+      log.info("setLogWriter()");
       logwriter = out;
    }
 
@@ -199,7 +199,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public LocalTransaction getLocalTransaction() throws ResourceException
    {
-      log.finest("getLocalTransaction()");
+      log.info("getLocalTransaction()");
       return null;
    }
 
@@ -211,7 +211,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public XAResource getXAResource() throws ResourceException
    {
-      log.finest("getXAResource()");
+      log.info("getXAResource()");
       return null;
    }
 
@@ -223,7 +223,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     */
    public ManagedConnectionMetaData getMetaData() throws ResourceException
    {
-      log.finest("getMetaData()");
+      log.info("getMetaData()");
       return new Neo4jManagedConnectionMetaData();
    }
 

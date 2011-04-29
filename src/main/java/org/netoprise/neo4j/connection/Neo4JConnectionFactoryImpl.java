@@ -80,7 +80,7 @@ public class Neo4JConnectionFactoryImpl implements Neo4JConnectionFactory
     */
    public Neo4JConnection getConnection() throws ResourceException
    {
-      log.finest("getConnection()");
+      log.info("getConnection()");
       return (Neo4JConnection)connectionManager.allocateConnection(mcf, null);
    }
 
@@ -92,7 +92,7 @@ public class Neo4JConnectionFactoryImpl implements Neo4JConnectionFactory
     */
    public Reference getReference() throws NamingException
    {
-      log.finest("getReference()");
+      log.info("getReference()");
       return reference;
    }
 
@@ -103,7 +103,7 @@ public class Neo4JConnectionFactoryImpl implements Neo4JConnectionFactory
     */
    public void setReference(Reference reference)
    {
-      log.finest("setReference()");
+      log.info("setReference()");
       this.reference = reference;
    }
 

@@ -60,7 +60,7 @@ public class Neo4JConnectionImpl implements Neo4JConnection
     */
    public String createNode(String name)
    {
-      log.finest("createNode()");
+      log.info("createNode()");
       return null;
 
    }

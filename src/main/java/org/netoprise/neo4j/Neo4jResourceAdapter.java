@@ -89,7 +89,7 @@ public class Neo4jResourceAdapter implements ResourceAdapter
    public void endpointActivation(MessageEndpointFactory endpointFactory,
       ActivationSpec spec) throws ResourceException
    {
-      log.finest("endpointActivation()");
+      log.info("endpointActivation()");
    }
 
    /**
@@ -101,7 +101,7 @@ public class Neo4jResourceAdapter implements ResourceAdapter
    public void endpointDeactivation(MessageEndpointFactory endpointFactory,
       ActivationSpec spec)
    {
-      log.finest("endpointDeactivation()");
+      log.info("endpointDeactivation()");
    }
 
    /**
@@ -113,7 +113,7 @@ public class Neo4jResourceAdapter implements ResourceAdapter
    public void start(BootstrapContext ctx)
       throws ResourceAdapterInternalException
    {
-      log.finest("start()");
+      log.info("start()");
    }
 
    /**
@@ -122,7 +122,7 @@ public class Neo4jResourceAdapter implements ResourceAdapter
     */
    public void stop()
    {
-      log.finest("stop()");
+      log.info("stop()");
    }
 
    /**
@@ -135,7 +135,7 @@ public class Neo4jResourceAdapter implements ResourceAdapter
    public XAResource[] getXAResources(ActivationSpec[] specs)
       throws ResourceException
    {
-      log.finest("getXAResources()");
+      log.info("getXAResources()");
       return null;
    }
 
