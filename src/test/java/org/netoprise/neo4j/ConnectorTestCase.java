@@ -35,14 +35,13 @@ import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.netoprise.neo4j.Neo4jConnectionMetaData;
-import org.netoprise.neo4j.Neo4jConnectionSpec;
 import org.netoprise.neo4j.Neo4jManagedConnection;
 import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
-import org.netoprise.neo4j.Neo4jRaMetaData;
 import org.netoprise.neo4j.Neo4jResourceAdapter;
-import org.netoprise.neo4j.cci.Neo4jCciConnection;
-import org.netoprise.neo4j.cci.Neo4jCciConnectionFactory;
+import org.netoprise.neo4j.connection.Neo4JConnection;
+import org.netoprise.neo4j.connection.Neo4JConnectionFactory;
+import org.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
+import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 import static org.junit.Assert.*;
 
@@ -70,7 +69,7 @@ public class ConnectorTestCase
       ResourceAdapterArchive raa =
          ShrinkWrap.create(ResourceAdapterArchive.class, deploymentName + ".rar");
       JavaArchive ja = ShrinkWrap.create(JavaArchive.class, UUID.randomUUID().toString() + ".jar");
-      ja.addClasses(Neo4jResourceAdapter.class, Neo4jManagedConnectionFactory.class, Neo4jManagedConnection.class, Neo4jCciConnectionFactory.class, Neo4jCciConnectionFactory.class, Neo4jConnectionMetaData.class, Neo4jRaMetaData.class, Neo4jConnectionSpec.class);
+      ja.addClasses(Neo4jResourceAdapter.class, Neo4jManagedConnectionFactory.class, Neo4jManagedConnection.class, Neo4JConnectionFactory.class, Neo4JConnectionFactoryImpl.class, Neo4JConnection.class,Neo4JConnectionImpl.class);
       raa.addLibrary(ja);
 
       return raa;
@@ -78,7 +77,7 @@ public class ConnectorTestCase
 
    /** Resource */
    @Resource(mappedName = "java:/eis/ConnectorTestCase")
-   private Neo4jCciConnectionFactory connectionFactory;
+   private Neo4JConnectionFactory connectionFactory;
 
    /**
     * Test Basic
@@ -89,7 +88,7 @@ public class ConnectorTestCase
    public void testBasic() throws Throwable
    {
       assertNotNull(connectionFactory);
-      Neo4jCciConnection connection = (Neo4jCciConnection) connectionFactory.getConnection();
+      Neo4JConnection connection = connectionFactory.getConnection();
       assertNotNull(connection);
       connection.close();
    }

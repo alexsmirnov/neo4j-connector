@@ -32,8 +32,6 @@ import javax.resource.cci.RecordFactory;
 import javax.resource.cci.ResourceAdapterMetaData;
 import javax.resource.spi.ConnectionManager;
 
-import org.netoprise.neo4j.Neo4jConnectionSpec;
-import org.netoprise.neo4j.Neo4jRaMetaData;
 
 /**
  * Neo4jCciConnectionFactory

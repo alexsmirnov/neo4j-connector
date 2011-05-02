@@ -38,7 +38,9 @@ import javax.resource.spi.ManagedConnectionMetaData;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
-import org.netoprise.neo4j.cci.Neo4jCciConnection;
+import org.netoprise.neo4j.connection.Neo4JConnection;
+import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
+
 
 /**
  * Neo4jManagedConnection
@@ -88,7 +90,7 @@ public class Neo4jManagedConnection implements ManagedConnection
       ConnectionRequestInfo cxRequestInfo) throws ResourceException
    {
       log.info("getConnection()");
-      connection = new Neo4jCciConnection(this, mcf);
+      connection = new Neo4JConnectionImpl(this, mcf);
       return connection;
    }
 
@@ -156,7 +158,7 @@ public class Neo4jManagedConnection implements ManagedConnection
     *
     * @param handle The handle
     */
-   public void closeHandle(Neo4jCciConnection handle)
+   public void closeHandle(Neo4JConnection handle)
    {
       ConnectionEvent event = new ConnectionEvent(this, ConnectionEvent.CONNECTION_CLOSED);
       event.setConnectionHandle(handle);

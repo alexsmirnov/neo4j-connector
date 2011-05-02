@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
 import javax.resource.spi.ConfigProperty;
 import javax.resource.spi.ConnectionDefinition;
 import javax.resource.spi.ConnectionManager;
@@ -41,18 +39,20 @@ import javax.resource.spi.ResourceAdapterAssociation;
 
 import javax.security.auth.Subject;
 
-import org.netoprise.neo4j.cci.Neo4jCciConnection;
-import org.netoprise.neo4j.cci.Neo4jCciConnectionFactory;
+import org.netoprise.neo4j.connection.Neo4JConnection;
+import org.netoprise.neo4j.connection.Neo4JConnectionFactory;
+import org.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
+import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 /**
  * Neo4jManagedConnectionFactory
  *
  * @version $Revision: $
  */
-@ConnectionDefinition(connectionFactory = ConnectionFactory.class,
-   connectionFactoryImpl = Neo4jCciConnectionFactory.class,
-   connection = Connection.class,
-   connectionImpl = Neo4jCciConnection.class)
+@ConnectionDefinition(connectionFactory = Neo4JConnectionFactory.class,
+   connectionFactoryImpl = Neo4JConnectionFactoryImpl.class,
+   connection = Neo4JConnection.class,
+   connectionImpl = Neo4JConnectionImpl.class)
 public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, ResourceAdapterAssociation
 {
 
@@ -86,7 +86,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, 
    public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException
    {
       log.info("createConnectionFactory()");
-      return new Neo4jCciConnectionFactory(cxManager);
+      return new Neo4JConnectionFactoryImpl(this,cxManager);
    }
 
    /**
