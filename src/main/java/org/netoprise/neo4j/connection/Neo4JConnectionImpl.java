@@ -23,54 +23,137 @@ package org.netoprise.neo4j.connection;
 
 import java.util.logging.Logger;
 
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.index.IndexManager;
 import org.netoprise.neo4j.Neo4jManagedConnection;
 import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
 
 /**
  * Neo4JConnectionImpl
- *
+ * 
  * @version $Revision: $
  */
-public class Neo4JConnectionImpl implements Neo4JConnection
-{
-   /** The logger */
-   private static Logger log = Logger.getLogger("Neo4JConnectionImpl");
+public class Neo4JConnectionImpl implements Neo4JConnection {
+	/** The logger */
+	private static Logger log = Logger.getLogger("Neo4JConnectionImpl");
 
-   /** ManagedConnection */
-   private Neo4jManagedConnection mc;
+	/** ManagedConnection */
+	private Neo4jManagedConnection mc;
 
-   /** ManagedConnectionFactory */
-   private Neo4jManagedConnectionFactory mcf;
+	/** ManagedConnectionFactory */
+	private Neo4jManagedConnectionFactory mcf;
 
-   /**
-    * Default constructor
-    * @param mc Neo4JManagedConnection
-    * @param mcf Neo4JManagedConnectionFactory
-    */
-   public Neo4JConnectionImpl(Neo4jManagedConnection mc, Neo4jManagedConnectionFactory mcf)
-   {
-      this.mc = mc;
-      this.mcf = mcf;
-   }
+	/**
+	 * Default constructor
+	 * 
+	 * @param mc
+	 *            Neo4JManagedConnection
+	 * @param mcf
+	 *            Neo4JManagedConnectionFactory
+	 */
+	public Neo4JConnectionImpl(Neo4jManagedConnection mc,
+			Neo4jManagedConnectionFactory mcf) {
+		this.mc = mc;
+		this.mcf = mcf;
+	}
 
-   /**
-    * Call createNode
-    * @param name String
-    * @return String
-    */
-   public String createNode(String name)
-   {
-      log.info("createNode()");
-      return null;
+	/**
+	 * Call createNode
+	 * 
+	 * @param name
+	 *            String
+	 * @return String
+	 */
+	public String createNode(String name) {
+		log.info("createNode()");
+		return null;
 
-   }
+	}
 
-   /**
-    * Close
-    */
-   public void close()
-   {
-//      mc.closeHandle(this);
-   }
+	/**
+	 * Close
+	 */
+	public void close() {
+		mc.closeHandle(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.neo4j.graphdb.GraphDatabaseService#createNode()
+	 */
+	@Override
+	public Node createNode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.neo4j.graphdb.GraphDatabaseService#getAllNodes()
+	 */
+	@Override
+	public Iterable<Node> getAllNodes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.neo4j.graphdb.GraphDatabaseService#getNodeById(long)
+	 */
+	@Override
+	public Node getNodeById(long arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.neo4j.graphdb.GraphDatabaseService#getReferenceNode()
+	 */
+	@Override
+	public Node getReferenceNode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.neo4j.graphdb.GraphDatabaseService#getRelationshipById(long)
+	 */
+	@Override
+	public Relationship getRelationshipById(long arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.neo4j.graphdb.GraphDatabaseService#getRelationshipTypes()
+	 */
+	@Override
+	public Iterable<RelationshipType> getRelationshipTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.neo4j.graphdb.GraphDatabaseService#index()
+	 */
+	@Override
+	public IndexManager index() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

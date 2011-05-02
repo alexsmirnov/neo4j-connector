@@ -21,22 +21,35 @@
  */
 package org.netoprise.neo4j.connection;
 
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.index.IndexManager;
+
 /**
  * Neo4JConnection
- *
+ * 
  * @version $Revision: $
  */
-public interface Neo4JConnection
-{
-   /**
-    * createNode
-    * @param name name
-    * @return String
-    */
-   public String createNode(String name);
+public interface Neo4JConnection {
 
-   /**
-    * Close
-    */
-   public void close();
+	/**
+	 * Close
+	 */
+	void close();
+
+	IndexManager index();
+
+	Iterable<RelationshipType> getRelationshipTypes();
+
+	Relationship getRelationshipById(long arg0);
+
+	Node getReferenceNode();
+
+	Node getNodeById(long arg0);
+
+	Iterable<Node> getAllNodes();
+
+	Node createNode();
+	
 }
