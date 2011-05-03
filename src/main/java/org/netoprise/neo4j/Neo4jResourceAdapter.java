@@ -21,6 +21,8 @@
  */
 package org.netoprise.neo4j;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
@@ -50,9 +52,10 @@ public class Neo4jResourceAdapter implements ResourceAdapter
    private static Logger log = Logger.getLogger("Neo4jResourceAdapter");
 
    /** dir */
-   @ConfigProperty(defaultValue = "/var/graphdb")
+   @ConfigProperty(defaultValue = "/tmp/graphdb")
    private String dir;
 
+   private final Set<Neo4jManagedConnectionFactory> factories = new HashSet<Neo4jManagedConnectionFactory>();
    /**
     * Default constructor
     */
@@ -79,6 +82,9 @@ public class Neo4jResourceAdapter implements ResourceAdapter
       return dir;
    }
 
+   public void addFactory(Neo4jManagedConnectionFactory factory){
+	   factories.add(factory);
+   }
    /**
     * This is called during the activation of a message endpoint.
     *
@@ -114,6 +120,9 @@ public class Neo4jResourceAdapter implements ResourceAdapter
       throws ResourceAdapterInternalException
    {
       log.info("start()");
+      for (Neo4jManagedConnectionFactory factory : factories) {
+		factory.start();
+	}
    }
 
    /**
@@ -123,6 +132,9 @@ public class Neo4jResourceAdapter implements ResourceAdapter
    public void stop()
    {
       log.info("stop()");
+      for (Neo4jManagedConnectionFactory factory : factories) {
+  		factory.stop();
+      }
    }
 
    /**

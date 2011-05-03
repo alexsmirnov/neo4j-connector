@@ -23,10 +23,13 @@ package org.netoprise.neo4j.connection;
 
 import java.util.logging.Logger;
 
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.IndexManager;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.netoprise.neo4j.Neo4jManagedConnection;
 import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
 
@@ -40,10 +43,12 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	private static Logger log = Logger.getLogger("Neo4JConnectionImpl");
 
 	/** ManagedConnection */
-	private Neo4jManagedConnection mc;
+	private final Neo4jManagedConnection mc;
 
 	/** ManagedConnectionFactory */
-	private Neo4jManagedConnectionFactory mcf;
+	private final Neo4jManagedConnectionFactory mcf;
+
+	private GraphDatabaseService graphDatabase;
 
 	/**
 	 * Default constructor
@@ -57,20 +62,9 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 			Neo4jManagedConnectionFactory mcf) {
 		this.mc = mc;
 		this.mcf = mcf;
+		this.graphDatabase = mcf.getDatabase();
 	}
 
-	/**
-	 * Call createNode
-	 * 
-	 * @param name
-	 *            String
-	 * @return String
-	 */
-	public String createNode(String name) {
-		log.info("createNode()");
-		return null;
-
-	}
 
 	/**
 	 * Close
@@ -86,8 +80,7 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	@Override
 	public Node createNode() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.graphDatabase.createNode();
 	}
 
 	/*
@@ -97,8 +90,7 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	@Override
 	public Iterable<Node> getAllNodes() {
-		// TODO Auto-generated method stub
-		return null;
+		return graphDatabase.getAllNodes();
 	}
 
 	/*
@@ -108,8 +100,7 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	@Override
 	public Node getNodeById(long arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return graphDatabase.getNodeById(arg0);
 	}
 
 	/*
@@ -119,8 +110,7 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	@Override
 	public Node getReferenceNode() {
-		// TODO Auto-generated method stub
-		return null;
+		return graphDatabase.getReferenceNode();
 	}
 
 	/*
@@ -130,8 +120,7 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	@Override
 	public Relationship getRelationshipById(long arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return graphDatabase.getRelationshipById(arg0);
 	}
 
 	/*
@@ -141,8 +130,7 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	@Override
 	public Iterable<RelationshipType> getRelationshipTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return graphDatabase.getRelationshipTypes();
 	}
 
 	/*
@@ -152,8 +140,16 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	@Override
 	public IndexManager index() {
-		// TODO Auto-generated method stub
-		return null;
+		return graphDatabase.index();
+	}
+
+
+	/**
+	 * @return
+	 * @see org.neo4j.graphdb.GraphDatabaseService#beginTx()
+	 */
+	public Transaction beginTx() {
+		return graphDatabase.beginTx();
 	}
 
 }

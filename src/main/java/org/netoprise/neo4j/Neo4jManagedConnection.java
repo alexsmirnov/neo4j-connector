@@ -38,196 +38,238 @@ import javax.resource.spi.ManagedConnectionMetaData;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
+import org.neo4j.graphdb.Transaction;
 import org.netoprise.neo4j.connection.Neo4JConnection;
 import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
-
 /**
  * Neo4jManagedConnection
- *
+ * 
  * @version $Revision: $
  */
-public class Neo4jManagedConnection implements ManagedConnection
-{
+public class Neo4jManagedConnection implements ManagedConnection {
 
-   /** The logger */
-   private static Logger log = Logger.getLogger("Neo4jManagedConnection");
+	/** The logger */
+	private static Logger log = Logger.getLogger("Neo4jManagedConnection");
 
-   /** The logwriter */
-   private PrintWriter logwriter;
+	/** The logwriter */
+	private PrintWriter logwriter;
 
-   /** ManagedConnectionFactory */
-   private Neo4jManagedConnectionFactory mcf;
+	/** ManagedConnectionFactory */
+	private Neo4jManagedConnectionFactory mcf;
 
-   /** Listeners */
-   private List<ConnectionEventListener> listeners;
+	/** Listeners */
+	private List<ConnectionEventListener> listeners;
 
-   /** Connection */
-   private Object connection;
+	/** Connection */
+	private Object connection;
 
-   /**
-    * Default constructor
-    * @param mcf mcf
-    */
-   public Neo4jManagedConnection(Neo4jManagedConnectionFactory mcf)
-   {
-      this.mcf = mcf;
-      this.logwriter = null;
-      this.listeners = new ArrayList<ConnectionEventListener>(1);
-      this.connection = null;
-   }
+	/**
+	 * Default constructor
+	 * 
+	 * @param mcf
+	 *            mcf
+	 */
+	public Neo4jManagedConnection(Neo4jManagedConnectionFactory mcf) {
+		this.mcf = mcf;
+		this.logwriter = null;
+		this.listeners = new ArrayList<ConnectionEventListener>(1);
+		this.connection = null;
+	}
 
-   /**
-    * Creates a new connection handle for the underlying physical connection 
-    * represented by the ManagedConnection instance. 
-    *
-    * @param subject Security context as JAAS subject
-    * @param cxRequestInfo ConnectionRequestInfo instance
-    * @return generic Object instance representing the connection handle. 
-    * @throws ResourceException generic exception if operation fails
-    */
-   public Object getConnection(Subject subject,
-      ConnectionRequestInfo cxRequestInfo) throws ResourceException
-   {
-      log.info("getConnection()");
-      connection = new Neo4JConnectionImpl(this, mcf);
-      return connection;
-   }
+	/**
+	 * Creates a new connection handle for the underlying physical connection
+	 * represented by the ManagedConnection instance.
+	 * 
+	 * @param subject
+	 *            Security context as JAAS subject
+	 * @param cxRequestInfo
+	 *            ConnectionRequestInfo instance
+	 * @return generic Object instance representing the connection handle.
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public Object getConnection(Subject subject,
+			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
+		log.info("getConnection()");
+		connection = new Neo4JConnectionImpl(this, mcf);
+		return connection;
+	}
 
-   /**
-    * Used by the container to change the association of an 
-    * application-level connection handle with a ManagedConneciton instance.
-    *
-    * @param connection Application-level connection handle
-    * @throws ResourceException generic exception if operation fails
-    */
-   public void associateConnection(Object connection) throws ResourceException
-   {
-      log.info("associateConnection()");
-   }
+	/**
+	 * Used by the container to change the association of an application-level
+	 * connection handle with a ManagedConneciton instance.
+	 * 
+	 * @param connection
+	 *            Application-level connection handle
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public void associateConnection(Object connection) throws ResourceException {
+		log.info("associateConnection()");
+	}
 
-   /**
-    * Application server calls this method to force any cleanup on the ManagedConnection instance.
-    *
-    * @throws ResourceException generic exception if operation fails
-    */
-   public void cleanup() throws ResourceException
+	/**
+	 * Application server calls this method to force any cleanup on the
+	 * ManagedConnection instance.
+	 * 
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public void cleanup() throws ResourceException
 
-   {
-      log.info("cleanup()");
-   }
+	{
+		log.info("cleanup()");
+	}
 
-   /**
-    * Destroys the physical connection to the underlying resource manager.
-    *
-    * @throws ResourceException generic exception if operation fails
-    */
-   public void destroy() throws ResourceException
-   {
-      log.info("destroy()");
-   }
+	/**
+	 * Destroys the physical connection to the underlying resource manager.
+	 * 
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public void destroy() throws ResourceException {
+		log.info("destroy()");
+	}
 
-   /**
-    * Adds a connection event listener to the ManagedConnection instance.
-    *
-    * @param listener A new ConnectionEventListener to be registered
-    */
-   public void addConnectionEventListener(ConnectionEventListener listener)
-   {
-      log.info("addConnectionEventListener()");
-      if (listener == null)
-         throw new IllegalArgumentException("Listener is null");
-      listeners.add(listener);
-   }
+	/**
+	 * Adds a connection event listener to the ManagedConnection instance.
+	 * 
+	 * @param listener
+	 *            A new ConnectionEventListener to be registered
+	 */
+	public void addConnectionEventListener(ConnectionEventListener listener) {
+		log.info("addConnectionEventListener()");
+		if (listener == null)
+			throw new IllegalArgumentException("Listener is null");
+		listeners.add(listener);
+	}
 
-   /**
-    * Removes an already registered connection event listener from the ManagedConnection instance.
-    *
-    * @param listener already registered connection event listener to be removed
-    */
-   public void removeConnectionEventListener(ConnectionEventListener listener)
-   {
-      log.info("removeConnectionEventListener()");
-      if (listener == null)
-         throw new IllegalArgumentException("Listener is null");
-      listeners.remove(listener);
-   }
+	/**
+	 * Removes an already registered connection event listener from the
+	 * ManagedConnection instance.
+	 * 
+	 * @param listener
+	 *            already registered connection event listener to be removed
+	 */
+	public void removeConnectionEventListener(ConnectionEventListener listener) {
+		log.info("removeConnectionEventListener()");
+		if (listener == null)
+			throw new IllegalArgumentException("Listener is null");
+		listeners.remove(listener);
+	}
 
-   /**
-    * Close handle
-    *
-    * @param handle The handle
-    */
-   public void closeHandle(Neo4JConnection handle)
-   {
-      ConnectionEvent event = new ConnectionEvent(this, ConnectionEvent.CONNECTION_CLOSED);
-      event.setConnectionHandle(handle);
-      for (ConnectionEventListener cel : listeners)
-      {
-         cel.connectionClosed(event);
-      }
+	/**
+	 * Close handle
+	 * 
+	 * @param handle
+	 *            The handle
+	 */
+	public void closeHandle(Neo4JConnection handle) {
+		ConnectionEvent event = new ConnectionEvent(this,
+				ConnectionEvent.CONNECTION_CLOSED);
+		event.setConnectionHandle(handle);
+		fireEvent(event);
 
-   }
+	}
 
-   /**
-    * Gets the log writer for this ManagedConnection instance.
-    *
-    * @return Character ourput stream associated with this Managed-Connection instance
-    * @throws ResourceException generic exception if operation fails
-    */
-   public PrintWriter getLogWriter() throws ResourceException
-   {
-      log.info("getLogWriter()");
-      return logwriter;
-   }
+	private void fireEvent(ConnectionEvent event) {
+		for (ConnectionEventListener cel : listeners) {
+			cel.connectionClosed(event);
+		}
+	}
 
-   /**
-    * Sets the log writer for this ManagedConnection instance.
-    *
-    * @param out Character Output stream to be associated
-    * @throws ResourceException  generic exception if operation fails
-    */
-   public void setLogWriter(PrintWriter out) throws ResourceException
-   {
-      log.info("setLogWriter()");
-      logwriter = out;
-   }
+	/**
+	 * Gets the log writer for this ManagedConnection instance.
+	 * 
+	 * @return Character ourput stream associated with this Managed-Connection
+	 *         instance
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public PrintWriter getLogWriter() throws ResourceException {
+		log.info("getLogWriter()");
+		return logwriter;
+	}
 
-   /**
-    * Returns an <code>javax.resource.spi.LocalTransaction</code> instance.
-    *
-    * @return LocalTransaction instance
-    * @throws ResourceException generic exception if operation fails
-    */
-   public LocalTransaction getLocalTransaction() throws ResourceException
-   {
-      log.info("getLocalTransaction()");
-      return null;
-   }
+	/**
+	 * Sets the log writer for this ManagedConnection instance.
+	 * 
+	 * @param out
+	 *            Character Output stream to be associated
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public void setLogWriter(PrintWriter out) throws ResourceException {
+		log.info("setLogWriter()");
+		logwriter = out;
+	}
 
-   /**
-    * Returns an <code>javax.transaction.xa.XAresource</code> instance. 
-    *
-    * @return XAResource instance
-    * @throws ResourceException generic exception if operation fails
-    */
-   public XAResource getXAResource() throws ResourceException
-   {
-      log.info("getXAResource()");
-      return null;
-   }
+	/**
+	 * Returns an <code>javax.resource.spi.LocalTransaction</code> instance.
+	 * 
+	 * @return LocalTransaction instance
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public LocalTransaction getLocalTransaction() throws ResourceException {
+		log.info("getLocalTransaction()");
+		return new LocalTransaction() {
+			
+			private Transaction transaction;
 
-   /**
-    * Gets the metadata information for this connection's underlying EIS resource manager instance. 
-    *
-    * @return ManagedConnectionMetaData instance
-    * @throws ResourceException generic exception if operation fails
-    */
-   public ManagedConnectionMetaData getMetaData() throws ResourceException
-   {
-      log.info("getMetaData()");
-      return new Neo4jManagedConnectionMetaData();
-   }
+			@Override
+			public void rollback() throws ResourceException {
+				if(null != transaction){
+					transaction.failure();
+					transaction.finish();
+					fireEvent(new ConnectionEvent(Neo4jManagedConnection.this,
+				ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK));
+				}
+			}
+			
+			@Override
+			public void commit() throws ResourceException {
+				if(null != transaction){
+					transaction.success();
+					transaction.finish();
+					fireEvent(new ConnectionEvent(Neo4jManagedConnection.this,
+							ConnectionEvent.LOCAL_TRANSACTION_COMMITTED));
+				}
+			}
+			
+			@Override
+			public void begin() throws ResourceException {
+				this.transaction = mcf.getDatabase().beginTx();				
+				fireEvent(new ConnectionEvent(Neo4jManagedConnection.this,
+						ConnectionEvent.LOCAL_TRANSACTION_STARTED));
+			}
+		};
+	}
 
+	/**
+	 * Returns an <code>javax.transaction.xa.XAresource</code> instance.
+	 * 
+	 * @return XAResource instance
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public XAResource getXAResource() throws ResourceException {
+		log.info("getXAResource()");
+		return null;
+	}
+
+	/**
+	 * Gets the metadata information for this connection's underlying EIS
+	 * resource manager instance.
+	 * 
+	 * @return ManagedConnectionMetaData instance
+	 * @throws ResourceException
+	 *             generic exception if operation fails
+	 */
+	public ManagedConnectionMetaData getMetaData() throws ResourceException {
+		log.info("getMetaData()");
+		return new Neo4jManagedConnectionMetaData();
+	}
 
 }

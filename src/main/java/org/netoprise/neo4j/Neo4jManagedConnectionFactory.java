@@ -39,6 +39,8 @@ import javax.resource.spi.ResourceAdapterAssociation;
 
 import javax.security.auth.Subject;
 
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.netoprise.neo4j.connection.Neo4JConnection;
 import org.netoprise.neo4j.connection.Neo4JConnectionFactory;
 import org.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
@@ -46,177 +48,205 @@ import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 /**
  * Neo4jManagedConnectionFactory
- *
+ * 
  * @version $Revision: $
  */
-@ConnectionDefinition(connectionFactory = Neo4JConnectionFactory.class,
-   connectionFactoryImpl = Neo4JConnectionFactoryImpl.class,
-   connection = Neo4JConnection.class,
-   connectionImpl = Neo4JConnectionImpl.class)
-public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory, ResourceAdapterAssociation
-{
+@ConnectionDefinition(connectionFactory = Neo4JConnectionFactory.class, connectionFactoryImpl = Neo4JConnectionFactoryImpl.class, connection = Neo4JConnection.class, connectionImpl = Neo4JConnectionImpl.class)
+public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
+		ResourceAdapterAssociation {
 
-   /** The serial version UID */
-   private static final long serialVersionUID = 1L;
+	/** The serial version UID */
+	private static final long serialVersionUID = 1L;
 
-   /** The logger */
-   private static Logger log = Logger.getLogger("Neo4jManagedConnectionFactory");
+	/** The logger */
+	private static Logger log = Logger
+			.getLogger("Neo4jManagedConnectionFactory");
 
-   /** The resource adapter */
-   private ResourceAdapter ra;
+	/** The resource adapter */
+	private Neo4jResourceAdapter ra;
 
-   /** The logwriter */
-   private PrintWriter logwriter;
+	/** The logwriter */
+	private PrintWriter logwriter;
 
-   /**
-    * Default constructor
-    */
-   public Neo4jManagedConnectionFactory()
-   {
+	private GraphDatabaseService database;
 
-   }
+	/**
+	 * Default constructor
+	 */
+	public Neo4jManagedConnectionFactory() {
 
-   /**
-    * Creates a Connection Factory instance. 
-    *
-    * @param cxManager ConnectionManager to be associated with created EIS connection factory instance
-    * @return EIS-specific Connection Factory instance or javax.resource.cci.ConnectionFactory instance
-    * @throws ResourceException Generic exception
-    */
-   public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException
-   {
-      log.info("createConnectionFactory()");
-      return new Neo4JConnectionFactoryImpl(this,cxManager);
-   }
+	}
 
-   /**
-    * Creates a Connection Factory instance. 
-    *
-    * @return EIS-specific Connection Factory instance or javax.resource.cci.ConnectionFactory instance
-    * @throws ResourceException Generic exception
-    */
-   public Object createConnectionFactory() throws ResourceException
-   {
-      throw new ResourceException("This resource adapter doesn't support non-managed environments");
-   }
+	/**
+	 * Creates a Connection Factory instance.
+	 * 
+	 * @param cxManager
+	 *            ConnectionManager to be associated with created EIS connection
+	 *            factory instance
+	 * @return EIS-specific Connection Factory instance or
+	 *         javax.resource.cci.ConnectionFactory instance
+	 * @throws ResourceException
+	 *             Generic exception
+	 */
+	public Object createConnectionFactory(ConnectionManager cxManager)
+			throws ResourceException {
+		log.info("createConnectionFactory()");
+		return new Neo4JConnectionFactoryImpl(this, cxManager);
+	}
 
-   /**
-    * Creates a new physical connection to the underlying EIS resource manager.
-    *
-    * @param subject Caller's security information
-    * @param cxRequestInfo Additional resource adapter specific connection request information
-    * @throws ResourceException generic exception
-    * @return ManagedConnection instance 
-    */
-   public ManagedConnection createManagedConnection(Subject subject,
-         ConnectionRequestInfo cxRequestInfo) throws ResourceException
-   {
-      log.info("createManagedConnection()");
-      return new Neo4jManagedConnection(this);
-   }
+	/**
+	 * Creates a Connection Factory instance.
+	 * 
+	 * @return EIS-specific Connection Factory instance or
+	 *         javax.resource.cci.ConnectionFactory instance
+	 * @throws ResourceException
+	 *             Generic exception
+	 */
+	public Object createConnectionFactory() throws ResourceException {
+		throw new ResourceException(
+				"This resource adapter doesn't support non-managed environments");
+	}
 
-   /**
-    * Returns a matched connection from the candidate set of connections. 
-    *
-    * @param connectionSet Candidate connection set
-    * @param subject Caller's security information
-    * @param cxRequestInfo Additional resource adapter specific connection request information
-    * @throws ResourceException generic exception
-    * @return ManagedConnection if resource adapter finds an acceptable match otherwise null 
-    */
-   public ManagedConnection matchManagedConnections(Set connectionSet,
-         Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException
-   {
-      log.info("matchManagedConnections()");
-      ManagedConnection result = null;
-      Iterator it = connectionSet.iterator();
-      while (result == null && it.hasNext())
-      {
-         ManagedConnection mc = (ManagedConnection)it.next();
-         if (mc instanceof Neo4jManagedConnection)
-         {
-            result = mc;
-         }
+	/**
+	 * Creates a new physical connection to the underlying EIS resource manager.
+	 * 
+	 * @param subject
+	 *            Caller's security information
+	 * @param cxRequestInfo
+	 *            Additional resource adapter specific connection request
+	 *            information
+	 * @throws ResourceException
+	 *             generic exception
+	 * @return ManagedConnection instance
+	 */
+	public ManagedConnection createManagedConnection(Subject subject,
+			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
+		log.info("createManagedConnection()");
+		return new Neo4jManagedConnection(this);
+	}
 
-      }
-      return result;
-   }
+	/**
+	 * Returns a matched connection from the candidate set of connections.
+	 * 
+	 * @param connectionSet
+	 *            Candidate connection set
+	 * @param subject
+	 *            Caller's security information
+	 * @param cxRequestInfo
+	 *            Additional resource adapter specific connection request
+	 *            information
+	 * @throws ResourceException
+	 *             generic exception
+	 * @return ManagedConnection if resource adapter finds an acceptable match
+	 *         otherwise null
+	 */
+	public ManagedConnection matchManagedConnections(Set connectionSet,
+			Subject subject, ConnectionRequestInfo cxRequestInfo)
+			throws ResourceException {
+		log.info("matchManagedConnections()");
+		ManagedConnection result = null;
+		Iterator it = connectionSet.iterator();
+		while (result == null && it.hasNext()) {
+			ManagedConnection mc = (ManagedConnection) it.next();
+			if (mc instanceof Neo4jManagedConnection) {
+				result = mc;
+			}
 
-   /**
-    * Get the log writer for this ManagedConnectionFactory instance.
-    *
-    * @return PrintWriter
-    * @throws ResourceException generic exception
-    */
-   public PrintWriter getLogWriter() throws ResourceException
-   {
-      log.info("getLogWriter()");
-      return logwriter;
-   }
+		}
+		return result;
+	}
 
-   /**
-    * Set the log writer for this ManagedConnectionFactory instance.
-    *
-    * @param out PrintWriter - an out stream for error logging and tracing
-    * @throws ResourceException generic exception
-    */
-   public void setLogWriter(PrintWriter out) throws ResourceException
-   {
-      log.info("setLogWriter()");
-      logwriter = out;
-   }
+	/**
+	 * Get the log writer for this ManagedConnectionFactory instance.
+	 * 
+	 * @return PrintWriter
+	 * @throws ResourceException
+	 *             generic exception
+	 */
+	public PrintWriter getLogWriter() throws ResourceException {
+		log.info("getLogWriter()");
+		return logwriter;
+	}
 
-   /**
-    * Get the resource adapter
-    *
-    * @return The handle
-    */
-   public ResourceAdapter getResourceAdapter()
-   {
-      log.info("getResourceAdapter()");
-      return ra;
-   }
+	/**
+	 * Set the log writer for this ManagedConnectionFactory instance.
+	 * 
+	 * @param out
+	 *            PrintWriter - an out stream for error logging and tracing
+	 * @throws ResourceException
+	 *             generic exception
+	 */
+	public void setLogWriter(PrintWriter out) throws ResourceException {
+		log.info("setLogWriter()");
+		logwriter = out;
+	}
 
-   /**
-    * Set the resource adapter
-    *
-    * @param ra The handle
-    */
-   public void setResourceAdapter(ResourceAdapter ra)
-   {
-      log.info("setResourceAdapter()");
-      this.ra = ra;
-   }
+	/**
+	 * Get the resource adapter
+	 * 
+	 * @return The handle
+	 */
+	public ResourceAdapter getResourceAdapter() {
+		log.info("getResourceAdapter()");
+		return ra;
+	}
 
-   /** 
-    * Returns a hash code value for the object.
-    * @return A hash code value for this object.
-    */
-   @Override
-   public int hashCode()
-   {
-      int result = 17;
-      return result;
-   }
+	/**
+	 * Set the resource adapter
+	 * 
+	 * @param ra
+	 *            The handle
+	 */
+	public void setResourceAdapter(ResourceAdapter ra) {
+		log.info("setResourceAdapter()");
+		this.ra = (Neo4jResourceAdapter) ra;
+		this.ra.addFactory(this);
+	}
 
-   /** 
-    * Indicates whether some other object is equal to this one.
-    * @param other The reference object with which to compare.
-    * @return true if this object is the same as the obj argument, false otherwise.
-    */
-   @Override
-   public boolean equals(Object other)
-   {
-      if (other == null)
-         return false;
-      if (other == this)
-         return true;
-      if (!(other instanceof Neo4jManagedConnectionFactory))
-         return false;
-      Neo4jManagedConnectionFactory obj = (Neo4jManagedConnectionFactory)other;
-      boolean result = true; 
-      return result;
-   }
+	public void start() {
+		database = new EmbeddedGraphDatabase(ra.getDir());
 
+	}
+
+	public void stop() {
+		database.shutdown();
+	}
+
+	/**
+	 * @return the database
+	 */
+	public GraphDatabaseService getDatabase() {
+		return database;
+	}
+
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return A hash code value for this object.
+	 */
+	@Override
+	public int hashCode() {
+		int result = 17;
+		return result;
+	}
+
+	/**
+	 * Indicates whether some other object is equal to this one.
+	 * 
+	 * @param other
+	 *            The reference object with which to compare.
+	 * @return true if this object is the same as the obj argument, false
+	 *         otherwise.
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if (other == null){
+			return false;
+		} else if (other == this){
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }
