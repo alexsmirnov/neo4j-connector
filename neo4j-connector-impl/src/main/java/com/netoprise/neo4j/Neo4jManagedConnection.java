@@ -73,12 +73,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 			if (null != transaction) {
 				transaction.failure();
 				finish();
-				ConnectionEvent event = new ConnectionEvent(
-						Neo4jManagedConnection.this,
-						ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK);
-				for (ConnectionEventListener cel : listeners) {
-					cel.localTransactionRolledback(event);
-				}
+				fireRollbackEvent();
 			}
 		}
 
@@ -93,12 +88,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 			if (null != transaction) {
 				transaction.success();
 				finish();
-				ConnectionEvent event = new ConnectionEvent(
-						Neo4jManagedConnection.this,
-						ConnectionEvent.LOCAL_TRANSACTION_COMMITTED);
-				for (ConnectionEventListener cel : listeners) {
-					cel.localTransactionCommitted(event);
-				}
+				fireCommitEvent();
 			}
 		}
 
@@ -106,15 +96,52 @@ public class Neo4jManagedConnection implements ManagedConnection {
 		public void begin() throws ResourceException {
 			log.info("Transaction begin");
 			this.transaction = managedConnectionFactory.getDatabase().beginTx();
-			ConnectionEvent event = new ConnectionEvent(
-					Neo4jManagedConnection.this,
-					ConnectionEvent.LOCAL_TRANSACTION_STARTED);
-			for (ConnectionEventListener cel : listeners) {
-				cel.localTransactionStarted(event);
-			}
+			fireBeginEvent();
 		}
 	}
 
+	/**
+	 * Dummy transaction used when transaction management delegated to the container.
+	 * @author asmirnov
+	 *
+	 */
+	private final class DummyLocalTransaction implements LocalTransaction {
+
+		private boolean active;
+		
+		public boolean isActive() {
+			return active;
+		}
+
+		@Override
+		public void rollback() throws ResourceException {
+			log.info("Transaction rollback");
+			if (active) {
+				finish();
+				fireRollbackEvent();
+			}
+		}
+
+		public void finish() {
+			active = false;
+		}
+
+		@Override
+		public void commit() throws ResourceException {
+			log.info("Transaction commited");
+			if (active) {
+				finish();
+				fireCommitEvent();
+			}
+		}
+
+		@Override
+		public void begin() throws ResourceException {
+			log.info("Transaction begin");
+			active = true;
+			fireBeginEvent();
+		}
+	}
 	/** The logger */
 	private static Logger log = Logger.getLogger("Neo4jManagedConnection");
 
@@ -161,6 +188,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		log.info("getConnection()");
 		connection = new Neo4JConnectionImpl(this, managedConnectionFactory);
+		// TODO - check transaction manager
 		this.localTransaction = new Neo4jLocalTransaction();
 		return connection;
 	}
@@ -250,6 +278,33 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	private void fireCloseEvent(ConnectionEvent event) {
 		for (ConnectionEventListener cel : listeners) {
 			cel.connectionClosed(event);
+		}
+	}
+
+	private void fireRollbackEvent() {
+		ConnectionEvent event = new ConnectionEvent(
+				this,
+				ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK);
+		for (ConnectionEventListener cel : listeners) {
+			cel.localTransactionRolledback(event);
+		}
+	}
+
+	private void fireCommitEvent() {
+		ConnectionEvent event = new ConnectionEvent(
+				this,
+				ConnectionEvent.LOCAL_TRANSACTION_COMMITTED);
+		for (ConnectionEventListener cel : listeners) {
+			cel.localTransactionCommitted(event);
+		}
+	}
+
+	private void fireBeginEvent() {
+		ConnectionEvent event = new ConnectionEvent(
+				this,
+				ConnectionEvent.LOCAL_TRANSACTION_STARTED);
+		for (ConnectionEventListener cel : listeners) {
+			cel.localTransactionStarted(event);
 		}
 	}
 
