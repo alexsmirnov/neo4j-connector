@@ -39,8 +39,9 @@ import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
 import org.neo4j.graphdb.Transaction;
-import org.netoprise.neo4j.connection.Neo4JConnection;
 import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
+
+import com.netoprise.neo4j.connection.Neo4JConnection;
 
 /**
  * Neo4jManagedConnection

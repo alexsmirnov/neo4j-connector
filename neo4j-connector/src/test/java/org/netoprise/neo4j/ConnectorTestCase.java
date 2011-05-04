@@ -38,10 +38,11 @@ import org.junit.runner.RunWith;
 import org.netoprise.neo4j.Neo4jManagedConnection;
 import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
 import org.netoprise.neo4j.Neo4jResourceAdapter;
-import org.netoprise.neo4j.connection.Neo4JConnection;
-import org.netoprise.neo4j.connection.Neo4JConnectionFactory;
 import org.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
 import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
+
+import com.netoprise.neo4j.connection.Neo4JConnection;
+import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 
 import static org.junit.Assert.*;
 

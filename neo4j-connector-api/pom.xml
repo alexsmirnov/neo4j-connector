@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.netoprise</groupId>
+		<artifactId>neo4j-connector-parent</artifactId>
+		<version>0.1</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.netoprise</groupId>
+	<artifactId>neo4j-connector-api</artifactId>
+	<packaging>jar</packaging>
+	<version>0.1</version>
+	<url>http://repository.jboss.org</url>
+
+
+	<dependencies>
+		<!-- Neo4j -->
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-graph-algo</artifactId>
+			<version>1.4.M01</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>geronimo-jta_1.1_spec</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- JCA API -->
+		<dependency>
+			<groupId>org.jboss.ironjacamar</groupId>
+			<artifactId>ironjacamar-spec-api</artifactId>
+			<version>1.0.0.Beta6</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -4,11 +4,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.netoprise</groupId>
-	<artifactId>neo4j-connector</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>neo4j-connector-parent</artifactId>
+	<packaging>pom</packaging>
 	<version>0.1</version>
 	<url>http://repository.jboss.org</url>
-
+        <modules>
+           <module>neo4j-connector-api</module>
+           <module>neo4j-connector</module>
+        </modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -27,168 +30,8 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<dependencies>
-		<!-- Neo4j -->
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j</artifactId>
-			<version>1.4.M01</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>geronimo-jta_1.1_spec</artifactId>
-					<groupId>org.apache.geronimo.specs</groupId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.neo4j</groupId>
-					<artifactId>neo4j-udc</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- JCA API -->
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-spec-api</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Tests -->
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-api</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-spi</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-impl</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-impl-papaki</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-core-api</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-core-impl</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-deployers-common</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-deployers-fungal</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-embedded-arquillian</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-embedded</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-validator</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.integration</groupId>
-			<artifactId>jboss-transaction-spi</artifactId>
-			<version>5.1.0.CR1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-jaspi-api</artifactId>
-			<version>1.0.0.GA</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-transaction-api</artifactId>
-			<version>1.0.1.GA</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.jbossts</groupId>
-			<artifactId>jbossjts</artifactId>
-			<version>4.14.0.Final</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.jbossts</groupId>
-			<artifactId>jbossjts-integration</artifactId>
-			<version>4.14.0.Final</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.stdio</groupId>
-			<artifactId>jboss-stdio</artifactId>
-			<version>1.0.0.CR3</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.threads</groupId>
-			<artifactId>jboss-threads</artifactId>
-			<version>2.0.0.CR7</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.naming</groupId>
-			<artifactId>jnpserver</artifactId>
-			<version>5.0.3.GA</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>4.1.0.Final</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.6</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
 	<build>
+             <pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -214,6 +57,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+           </pluginManagement>
 	</build>
 	<repositories>
 		<repository>

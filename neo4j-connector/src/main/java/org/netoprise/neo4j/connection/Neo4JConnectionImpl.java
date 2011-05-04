@@ -33,6 +33,8 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.netoprise.neo4j.Neo4jManagedConnection;
 import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
 
+import com.netoprise.neo4j.connection.Neo4JConnection;
+
 /**
  * Neo4JConnectionImpl
  * 

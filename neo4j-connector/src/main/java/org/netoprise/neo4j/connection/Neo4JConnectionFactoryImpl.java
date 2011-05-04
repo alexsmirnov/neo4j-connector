@@ -31,6 +31,9 @@ import javax.resource.spi.ConnectionManager;
 
 import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
 
+import com.netoprise.neo4j.connection.Neo4JConnection;
+import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
+
 /**
  * Neo4JConnectionFactoryImpl
  *

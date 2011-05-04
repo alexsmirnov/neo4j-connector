@@ -41,10 +41,11 @@ import javax.security.auth.Subject;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
-import org.netoprise.neo4j.connection.Neo4JConnection;
-import org.netoprise.neo4j.connection.Neo4JConnectionFactory;
 import org.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
 import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
+
+import com.netoprise.neo4j.connection.Neo4JConnection;
+import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 
 /**
  * Neo4jManagedConnectionFactory
