@@ -10,6 +10,7 @@
 	<url>http://repository.jboss.org</url>
         <modules>
            <module>neo4j-connector-api</module>
+           <module>neo4j-connector-impl</module>
            <module>neo4j-connector</module>
         </modules>
 	<dependencyManagement>
