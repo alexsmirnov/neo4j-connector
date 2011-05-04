@@ -57,13 +57,15 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	private PrintWriter logwriter;
 
 	/** ManagedConnectionFactory */
-	private Neo4jManagedConnectionFactory mcf;
+	private Neo4jManagedConnectionFactory managedConnectionFactory;
 
 	/** Listeners */
 	private List<ConnectionEventListener> listeners;
 
 	/** Connection */
 	private Object connection;
+
+	private LocalTransaction localTransaction;
 
 	/**
 	 * Default constructor
@@ -72,10 +74,55 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *            mcf
 	 */
 	public Neo4jManagedConnection(Neo4jManagedConnectionFactory mcf) {
-		this.mcf = mcf;
+		this.managedConnectionFactory = mcf;
 		this.logwriter = null;
 		this.listeners = new ArrayList<ConnectionEventListener>(1);
 		this.connection = null;
+		this.localTransaction = new LocalTransaction() {
+			
+			private Transaction transaction;
+
+			@Override
+			public void rollback() throws ResourceException {
+				log.info("Transaction rollback");
+				if(null != transaction){
+					transaction.failure();
+					transaction.finish();
+					transaction = null;
+					ConnectionEvent event = new ConnectionEvent(Neo4jManagedConnection.this,
+				ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK);
+					for (ConnectionEventListener cel : listeners) {
+						cel.localTransactionRolledback(event);
+					}
+				}
+			}
+			
+			@Override
+			public void commit() throws ResourceException {
+				log.info("Transaction commited");
+				if(null != transaction){
+					transaction.success();
+					transaction.finish();
+					transaction = null;
+					ConnectionEvent event = new ConnectionEvent(Neo4jManagedConnection.this,
+							ConnectionEvent.LOCAL_TRANSACTION_COMMITTED);
+					for (ConnectionEventListener cel : listeners) {
+						cel.localTransactionCommitted(event);
+					}
+				}
+			}
+			
+			@Override
+			public void begin() throws ResourceException {
+				log.info("Transaction begin");
+				this.transaction = managedConnectionFactory.getDatabase().beginTx();				
+				ConnectionEvent event = new ConnectionEvent(Neo4jManagedConnection.this,
+						ConnectionEvent.LOCAL_TRANSACTION_STARTED);
+				for (ConnectionEventListener cel : listeners) {
+					cel.localTransactionStarted(event);
+				}
+			}
+		};
 	}
 
 	/**
@@ -93,7 +140,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	public Object getConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		log.info("getConnection()");
-		connection = new Neo4JConnectionImpl(this, mcf);
+		connection = new Neo4JConnectionImpl(this, managedConnectionFactory);
 		return connection;
 	}
 
@@ -170,11 +217,11 @@ public class Neo4jManagedConnection implements ManagedConnection {
 		ConnectionEvent event = new ConnectionEvent(this,
 				ConnectionEvent.CONNECTION_CLOSED);
 		event.setConnectionHandle(handle);
-		fireEvent(event);
+		fireCloseEvent(event);
 
 	}
 
-	private void fireEvent(ConnectionEvent event) {
+	private void fireCloseEvent(ConnectionEvent event) {
 		for (ConnectionEventListener cel : listeners) {
 			cel.connectionClosed(event);
 		}
@@ -215,37 +262,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 */
 	public LocalTransaction getLocalTransaction() throws ResourceException {
 		log.info("getLocalTransaction()");
-		return new LocalTransaction() {
-			
-			private Transaction transaction;
-
-			@Override
-			public void rollback() throws ResourceException {
-				if(null != transaction){
-					transaction.failure();
-					transaction.finish();
-					fireEvent(new ConnectionEvent(Neo4jManagedConnection.this,
-				ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK));
-				}
-			}
-			
-			@Override
-			public void commit() throws ResourceException {
-				if(null != transaction){
-					transaction.success();
-					transaction.finish();
-					fireEvent(new ConnectionEvent(Neo4jManagedConnection.this,
-							ConnectionEvent.LOCAL_TRANSACTION_COMMITTED));
-				}
-			}
-			
-			@Override
-			public void begin() throws ResourceException {
-				this.transaction = mcf.getDatabase().beginTx();				
-				fireEvent(new ConnectionEvent(Neo4jManagedConnection.this,
-						ConnectionEvent.LOCAL_TRANSACTION_STARTED));
-			}
-		};
+		return localTransaction;
 	}
 
 	/**
