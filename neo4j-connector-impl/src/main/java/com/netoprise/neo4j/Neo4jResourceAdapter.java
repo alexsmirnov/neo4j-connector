@@ -34,7 +34,6 @@ import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.TransactionSupport;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
-
 import javax.transaction.xa.XAResource;
 
 /**
@@ -54,6 +53,9 @@ public class Neo4jResourceAdapter implements ResourceAdapter
    /** dir */
    @ConfigProperty(defaultValue = "/tmp/graphdb")
    private String dir;
+
+   @ConfigProperty(defaultValue = "native")
+   private String txManager;
 
    private final Set<Neo4jManagedConnectionFactory> factories = new HashSet<Neo4jManagedConnectionFactory>();
    /**
@@ -82,7 +84,21 @@ public class Neo4jResourceAdapter implements ResourceAdapter
       return dir;
    }
 
-   public void addFactory(Neo4jManagedConnectionFactory factory){
+   /**
+ * @return the txManager
+ */
+public String getTxManager() {
+	return txManager;
+}
+
+/**
+ * @param txManager the txManager to set
+ */
+public void setTxManager(String txManager) {
+	this.txManager = txManager;
+}
+
+public void addFactory(Neo4jManagedConnectionFactory factory){
 	   factories.add(factory);
    }
    /**

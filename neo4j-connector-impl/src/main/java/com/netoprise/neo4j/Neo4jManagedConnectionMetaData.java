@@ -54,7 +54,7 @@ public class Neo4jManagedConnectionMetaData implements ManagedConnectionMetaData
    public String getEISProductName() throws ResourceException
    {
       log.info("getEISProductName()");
-      return null; //TODO
+      return "Neo4J";
    }
 
    /**
@@ -66,7 +66,7 @@ public class Neo4jManagedConnectionMetaData implements ManagedConnectionMetaData
    public String getEISProductVersion() throws ResourceException
    {
       log.info("getEISProductVersion()");
-      return null; //TODO
+      return "1.4.M01";
    }
 
    /**
@@ -78,7 +78,7 @@ public class Neo4jManagedConnectionMetaData implements ManagedConnectionMetaData
    public int getMaxConnections() throws ResourceException
    {
       log.info("getMaxConnections()");
-      return 0; //TODO
+      return 0;
    }
 
    /**

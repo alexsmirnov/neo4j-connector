@@ -50,6 +50,71 @@ import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
  */
 public class Neo4jManagedConnection implements ManagedConnection {
 
+	/**
+	 * TODO: delegate transactions to the platform JTA, see
+	 * http://static.springsource
+	 * .org/spring/docs/2.5.x/api/org/springframework/transaction
+	 * /jta/JtaTransactionManager.html
+	 * 
+	 * @author asmirnov
+	 * 
+	 */
+	private final class Neo4jLocalTransaction implements LocalTransaction {
+
+		private Transaction transaction;
+
+		public boolean isActive() {
+			return null != transaction;
+		}
+
+		@Override
+		public void rollback() throws ResourceException {
+			log.info("Transaction rollback");
+			if (null != transaction) {
+				transaction.failure();
+				finish();
+				ConnectionEvent event = new ConnectionEvent(
+						Neo4jManagedConnection.this,
+						ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK);
+				for (ConnectionEventListener cel : listeners) {
+					cel.localTransactionRolledback(event);
+				}
+			}
+		}
+
+		public void finish() {
+			transaction.finish();
+			transaction = null;
+		}
+
+		@Override
+		public void commit() throws ResourceException {
+			log.info("Transaction commited");
+			if (null != transaction) {
+				transaction.success();
+				finish();
+				ConnectionEvent event = new ConnectionEvent(
+						Neo4jManagedConnection.this,
+						ConnectionEvent.LOCAL_TRANSACTION_COMMITTED);
+				for (ConnectionEventListener cel : listeners) {
+					cel.localTransactionCommitted(event);
+				}
+			}
+		}
+
+		@Override
+		public void begin() throws ResourceException {
+			log.info("Transaction begin");
+			this.transaction = managedConnectionFactory.getDatabase().beginTx();
+			ConnectionEvent event = new ConnectionEvent(
+					Neo4jManagedConnection.this,
+					ConnectionEvent.LOCAL_TRANSACTION_STARTED);
+			for (ConnectionEventListener cel : listeners) {
+				cel.localTransactionStarted(event);
+			}
+		}
+	}
+
 	/** The logger */
 	private static Logger log = Logger.getLogger("Neo4jManagedConnection");
 
@@ -78,51 +143,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 		this.logwriter = null;
 		this.listeners = new ArrayList<ConnectionEventListener>(1);
 		this.connection = null;
-		this.localTransaction = new LocalTransaction() {
-			
-			private Transaction transaction;
-
-			@Override
-			public void rollback() throws ResourceException {
-				log.info("Transaction rollback");
-				if(null != transaction){
-					transaction.failure();
-					transaction.finish();
-					transaction = null;
-					ConnectionEvent event = new ConnectionEvent(Neo4jManagedConnection.this,
-				ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK);
-					for (ConnectionEventListener cel : listeners) {
-						cel.localTransactionRolledback(event);
-					}
-				}
-			}
-			
-			@Override
-			public void commit() throws ResourceException {
-				log.info("Transaction commited");
-				if(null != transaction){
-					transaction.success();
-					transaction.finish();
-					transaction = null;
-					ConnectionEvent event = new ConnectionEvent(Neo4jManagedConnection.this,
-							ConnectionEvent.LOCAL_TRANSACTION_COMMITTED);
-					for (ConnectionEventListener cel : listeners) {
-						cel.localTransactionCommitted(event);
-					}
-				}
-			}
-			
-			@Override
-			public void begin() throws ResourceException {
-				log.info("Transaction begin");
-				this.transaction = managedConnectionFactory.getDatabase().beginTx();				
-				ConnectionEvent event = new ConnectionEvent(Neo4jManagedConnection.this,
-						ConnectionEvent.LOCAL_TRANSACTION_STARTED);
-				for (ConnectionEventListener cel : listeners) {
-					cel.localTransactionStarted(event);
-				}
-			}
-		};
 	}
 
 	/**
@@ -141,6 +161,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		log.info("getConnection()");
 		connection = new Neo4JConnectionImpl(this, managedConnectionFactory);
+		this.localTransaction = new Neo4jLocalTransaction();
 		return connection;
 	}
 
@@ -168,6 +189,8 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 	{
 		log.info("cleanup()");
+		this.connection = null;
+		this.localTransaction = null;
 	}
 
 	/**
@@ -178,6 +201,9 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 */
 	public void destroy() throws ResourceException {
 		log.info("destroy()");
+		this.connection = null;
+		this.localTransaction = null;
+		managedConnectionFactory.destroyManagedConnection(this);
 	}
 
 	/**

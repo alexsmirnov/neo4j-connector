@@ -22,6 +22,7 @@
 package com.netoprise.neo4j;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -40,6 +41,7 @@ import javax.resource.spi.ResourceAdapterAssociation;
 import javax.security.auth.Subject;
 
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.kernel.Config;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import com.netoprise.neo4j.connection.Neo4JConnection;
@@ -71,7 +73,11 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 
 	private GraphDatabaseService database;
 
-	/** dir */
+	private int connectionsCreated = 0;
+
+	/**
+	 * dir TODO: add Neo4j configuration parameters
+	 * */
 	@ConfigProperty
 	private String dir;
 
@@ -135,10 +141,8 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	public ManagedConnection createManagedConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		log.info("createManagedConnection()");
-		if (null == database) {
-			database = new EmbeddedGraphDatabase(null == getDir() ? ra.getDir()
-					: getDir());
-		}
+		createDatabase();
+		connectionsCreated++;
 		return new Neo4jManagedConnection(this);
 	}
 
@@ -220,15 +224,35 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 		this.ra.addFactory(this);
 	}
 
+	public void destroyManagedConnection(Neo4jManagedConnection connection) {
+		connectionsCreated--;
+		if (connectionsCreated <= 0 ) {
+			shutdownDatabase();
+		}
+	}
+
 	public void start() {
 		// database = new EmbeddedGraphDatabase(ra.getDir());
 
 	}
 
 	public void stop() {
+		shutdownDatabase();
+	}
+
+	private void shutdownDatabase() {
 		if (null != database) {
 			database.shutdown();
 			database = null;
+		}
+	}
+
+	private void createDatabase() {
+		if (null == database) {
+			HashMap<String, String> config = new HashMap<String, String>(2);
+			config.put(Config.TXMANAGER_IMPLEMENTATION, ra.getTxManager());	
+			database = new EmbeddedGraphDatabase(null == getDir() ? ra.getDir()
+					: getDir());
 		}
 	}
 
