@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.netoprise.neo4j;
+package com.netoprise.neo4j;
 
 import java.io.PrintWriter;
 
@@ -39,9 +39,9 @@ import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
 import org.neo4j.graphdb.Transaction;
-import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 import com.netoprise.neo4j.connection.Neo4JConnection;
+import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 /**
  * Neo4jManagedConnection

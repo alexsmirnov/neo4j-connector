@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.netoprise.neo4j;
+package com.netoprise.neo4j;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
@@ -41,11 +41,11 @@ import javax.security.auth.Subject;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
-import org.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
-import org.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 import com.netoprise.neo4j.connection.Neo4JConnection;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
+import com.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
+import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 /**
  * Neo4jManagedConnectionFactory
@@ -71,11 +71,23 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 
 	private GraphDatabaseService database;
 
+	/** dir */
+	@ConfigProperty
+	private String dir;
+
 	/**
 	 * Default constructor
 	 */
 	public Neo4jManagedConnectionFactory() {
 
+	}
+
+	public String getDir() {
+		return dir;
+	}
+
+	public void setDir(String dir) {
+		this.dir = dir;
 	}
 
 	/**
@@ -123,6 +135,10 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	public ManagedConnection createManagedConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		log.info("createManagedConnection()");
+		if (null == database) {
+			database = new EmbeddedGraphDatabase(null == getDir() ? ra.getDir()
+					: getDir());
+		}
 		return new Neo4jManagedConnection(this);
 	}
 
@@ -205,12 +221,15 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	}
 
 	public void start() {
-		database = new EmbeddedGraphDatabase(ra.getDir());
+		// database = new EmbeddedGraphDatabase(ra.getDir());
 
 	}
 
 	public void stop() {
-		database.shutdown();
+		if (null != database) {
+			database.shutdown();
+			database = null;
+		}
 	}
 
 	/**
@@ -241,9 +260,9 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 */
 	@Override
 	public boolean equals(Object other) {
-		if (other == null){
+		if (other == null) {
 			return false;
-		} else if (other == this){
+		} else if (other == this) {
 			return true;
 		} else {
 			return false;

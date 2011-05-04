@@ -26,21 +26,16 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema 
              http://www.jboss.org/ironjacamar/schema/ironjacamar_1_0.xsd">
-  <config-property name="dir">/var/graphdb</config-property>
+  <config-property name="dir">/tmp/graphdb</config-property>
 
   <transaction-support>LocalTransaction</transaction-support>
   
   <connection-definitions>
-    <connection-definition class-name="org.netoprise.neo4j.Neo4jManagedConnectionFactory" 
+    <connection-definition class-name="com.netoprise.neo4j.Neo4jManagedConnectionFactory" 
       enabled="true" jndi-name="java:/eis/Neo4j" 
       use-java-context="true" pool-name="Neo4j">
 
     </connection-definition>
   </connection-definitions>
-  <admin-objects>
-    <admin-object class-name="org.netoprise.neo4j.Neo4jAdminObjectImpl" jndi-name="java:/Neo4jAdminObjectImpl">
-      <config-property name="dir">/var/graphdb</config-property>
-    </admin-object>
-  </admin-objects>
 
 </ironjacamar>

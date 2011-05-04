@@ -19,31 +19,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.netoprise.neo4j;
+package com.netoprise.neo4j.cci;
 
-import java.io.Serializable;
-
-import javax.resource.Referenceable;
+import javax.resource.cci.ConnectionSpec ;
 
 /**
- * Neo4jAdminObject
+ * Neo4jConnectionSpec
  *
  * @version $Revision: $
  */
-public interface Neo4jAdminObject extends Referenceable, Serializable
+public class Neo4jConnectionSpec implements ConnectionSpec
 {
-
-   /** 
-    * Set dir
-    * @param dir The value
+   /**
+    * Default constructor
     */
-   public void setDir(String dir);
+   public Neo4jConnectionSpec()
+   {
 
-   /** 
-    * Get dir
-    * @return The value
-    */
-   public String getDir();
+   }
 
 
 }

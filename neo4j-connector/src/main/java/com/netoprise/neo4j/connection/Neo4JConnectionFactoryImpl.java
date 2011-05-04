@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.netoprise.neo4j.connection;
+package com.netoprise.neo4j.connection;
 
 import java.util.logging.Logger;
 
@@ -29,8 +29,8 @@ import javax.naming.Reference;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionManager;
 
-import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
 
+import com.netoprise.neo4j.Neo4jManagedConnectionFactory;
 import com.netoprise.neo4j.connection.Neo4JConnection;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 

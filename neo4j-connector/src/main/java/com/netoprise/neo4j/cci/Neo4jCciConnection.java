@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.netoprise.neo4j.cci;
+package com.netoprise.neo4j.cci;
 
 import javax.resource.ResourceException;
 
@@ -30,8 +30,8 @@ import javax.resource.cci.Interaction;
 import javax.resource.cci.LocalTransaction;
 import javax.resource.cci.ResultSetInfo;
 
-import org.netoprise.neo4j.Neo4jManagedConnection;
-import org.netoprise.neo4j.Neo4jManagedConnectionFactory;
+import com.netoprise.neo4j.Neo4jManagedConnection;
+import com.netoprise.neo4j.Neo4jManagedConnectionFactory;
 
 /**
  * Neo4jCciConnection
