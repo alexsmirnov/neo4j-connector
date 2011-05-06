@@ -22,7 +22,6 @@
 package com.netoprise.neo4j;
 
 import java.io.PrintWriter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -34,14 +33,16 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.LocalTransaction;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionMetaData;
-
 import javax.security.auth.Subject;
+import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
+import javax.transaction.xa.Xid;
 
 import org.neo4j.graphdb.Transaction;
 
 import com.netoprise.neo4j.connection.Neo4JConnection;
 import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
+import com.netoprise.neo4j.transaction.PlatformTransactionProvider;
 
 /**
  * Neo4jManagedConnection
@@ -49,6 +50,70 @@ import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
  * @version $Revision: $
  */
 public class Neo4jManagedConnection implements ManagedConnection {
+
+	private final class Neo4jXAResource implements XAResource {
+
+		@Override
+		public void commit(Xid arg0, boolean arg1) throws XAException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void end(Xid arg0, int arg1) throws XAException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void forget(Xid arg0) throws XAException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public int getTransactionTimeout() throws XAException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public boolean isSameRM(XAResource arg0) throws XAException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public int prepare(Xid arg0) throws XAException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public Xid[] recover(int arg0) throws XAException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void rollback(Xid arg0) throws XAException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean setTransactionTimeout(int arg0) throws XAException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void start(Xid arg0, int arg1) throws XAException {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
 
 	/**
 	 * TODO: delegate transactions to the platform JTA, see
@@ -115,7 +180,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void rollback() throws ResourceException {
-			log.info("Transaction rollback");
+			log.info("Dummy Transaction rollback");
 			if (active) {
 				finish();
 				fireRollbackEvent();
@@ -128,7 +193,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void commit() throws ResourceException {
-			log.info("Transaction commited");
+			log.info("Dummy Transaction commited");
 			if (active) {
 				finish();
 				fireCommitEvent();
@@ -137,7 +202,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void begin() throws ResourceException {
-			log.info("Transaction begin");
+			log.info("Dummy Transaction begin");
 			active = true;
 			fireBeginEvent();
 		}
@@ -159,6 +224,8 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 	private LocalTransaction localTransaction;
 
+	private Neo4jXAResource xaResource;
+
 	/**
 	 * Default constructor
 	 * 
@@ -170,6 +237,13 @@ public class Neo4jManagedConnection implements ManagedConnection {
 		this.logwriter = null;
 		this.listeners = new ArrayList<ConnectionEventListener>(1);
 		this.connection = null;
+		// check transaction manager
+		if(PlatformTransactionProvider.JEE_JTA.equals(mcf.getResourceAdapter().getTxManager())){
+			this.localTransaction = new DummyLocalTransaction();
+		} else {
+			this.localTransaction = new Neo4jLocalTransaction();
+		}
+		this.xaResource = new Neo4jXAResource();
 	}
 
 	/**
@@ -188,8 +262,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		log.info("getConnection()");
 		connection = new Neo4JConnectionImpl(this, managedConnectionFactory);
-		// TODO - check transaction manager
-		this.localTransaction = new Neo4jLocalTransaction();
 		return connection;
 	}
 
@@ -218,7 +290,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	{
 		log.info("cleanup()");
 		this.connection = null;
-		this.localTransaction = null;
 	}
 
 	/**
@@ -355,7 +426,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 */
 	public XAResource getXAResource() throws ResourceException {
 		log.info("getXAResource()");
-		return null;
+		return this.xaResource;
 	}
 
 	/**

@@ -2,6 +2,7 @@ package com.netoprise.neo4j.transaction;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -23,6 +24,8 @@ import org.neo4j.kernel.impl.transaction.XaDataSourceManager;
  * 
  */
 class PlatformTransactionManager extends AbstractTransactionManager {
+	private static Logger log = Logger
+	.getLogger("Neo4jTransactionManager");
 
 	private static final Collection<String> NAMES = Arrays.asList(
 			"java:/TransactionManager", "java:appserver/TransactionManager",
@@ -45,12 +48,14 @@ class PlatformTransactionManager extends AbstractTransactionManager {
 			try {
 				transactionManager = (TransactionManager) initialContext
 						.lookup(name);
+				log.info("TransactionManager found at "+name);
 				return;
 			} catch (NamingException e) {
 				// try next
 				continue;
 			}
 		}
+		log.severe("Cannot find provided TransactionManager");
 		throw new RuntimeException("Cannot find provided TransactionManager");
 	}
 

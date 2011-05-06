@@ -80,6 +80,8 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 * */
 	@ConfigProperty
 	private String dir;
+	@ConfigProperty
+	private String txManager;
 
 	/**
 	 * Default constructor
@@ -89,11 +91,25 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	}
 
 	public String getDir() {
+		if(null == dir){
+			return ra.getDir();
+		}
 		return dir;
 	}
 
 	public void setDir(String dir) {
 		this.dir = dir;
+	}
+
+	public String getTxManager() {
+		if(null == txManager){
+			return ra.getTxManager();
+		}
+		return txManager;
+	}
+
+	public void setTxManager(String txManager) {
+		this.txManager = txManager;
 	}
 
 	/**
@@ -207,7 +223,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 * 
 	 * @return The handle
 	 */
-	public ResourceAdapter getResourceAdapter() {
+	public Neo4jResourceAdapter getResourceAdapter() {
 		log.info("getResourceAdapter()");
 		return ra;
 	}
@@ -250,9 +266,8 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	private void createDatabase() {
 		if (null == database) {
 			HashMap<String, String> config = new HashMap<String, String>(2);
-			config.put(Config.TXMANAGER_IMPLEMENTATION, ra.getTxManager());	
-			database = new EmbeddedGraphDatabase(null == getDir() ? ra.getDir()
-					: getDir());
+			config.put(Config.TXMANAGER_IMPLEMENTATION, getTxManager());	
+			database = new EmbeddedGraphDatabase(getDir(),config);
 		}
 	}
 
