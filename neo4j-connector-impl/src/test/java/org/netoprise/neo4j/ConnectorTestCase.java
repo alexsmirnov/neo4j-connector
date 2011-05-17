@@ -21,31 +21,28 @@
  */
 package org.netoprise.neo4j;
 
+import static org.junit.Assert.*;
+
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
-import javax.transaction.UserTransaction;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.netoprise.neo4j.Neo4jManagedConnection;
 import com.netoprise.neo4j.Neo4jManagedConnectionFactory;
 import com.netoprise.neo4j.Neo4jResourceAdapter;
-import com.netoprise.neo4j.connection.Neo4JConnection;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
 import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
-
-import static org.junit.Assert.*;
 
 
 /**
@@ -71,7 +68,7 @@ public class ConnectorTestCase
       ResourceAdapterArchive raa =
          ShrinkWrap.create(ResourceAdapterArchive.class, deploymentName + ".rar");
       JavaArchive ja = ShrinkWrap.create(JavaArchive.class, UUID.randomUUID().toString() + ".jar");
-      ja.addClasses(Neo4jResourceAdapter.class, Neo4jManagedConnectionFactory.class, Neo4jManagedConnection.class, Neo4JConnectionFactory.class, Neo4JConnectionFactoryImpl.class, Neo4JConnection.class,Neo4JConnectionImpl.class);
+      ja.addClasses(Neo4jResourceAdapter.class, Neo4jManagedConnectionFactory.class, Neo4jManagedConnection.class, Neo4JConnectionFactory.class, Neo4JConnectionFactoryImpl.class, GraphDatabaseService.class,Neo4JConnectionImpl.class);
       raa.addLibrary(ja);
 
       return raa;
@@ -90,9 +87,9 @@ public class ConnectorTestCase
    public void testBasic() throws Throwable
    {
       assertNotNull(connectionFactory);
-      Neo4JConnection connection = connectionFactory.getConnection();
+      GraphDatabaseService connection = connectionFactory.getConnection();
       assertNotNull(connection);
-      connection.close();
+      connection.shutdown();
    }
 
 }

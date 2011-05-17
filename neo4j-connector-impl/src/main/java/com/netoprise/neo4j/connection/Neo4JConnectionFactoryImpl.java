@@ -25,14 +25,12 @@ import java.util.logging.Logger;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
-
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionManager;
 
+import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.netoprise.neo4j.Neo4jManagedConnectionFactory;
-import com.netoprise.neo4j.connection.Neo4JConnection;
-import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 
 /**
  * Neo4JConnectionFactoryImpl
@@ -81,10 +79,10 @@ public class Neo4JConnectionFactoryImpl implements Neo4JConnectionFactory
     * @return Neo4JConnection instance
     * @exception ResourceException Thrown if a connection can't be obtained
     */
-   public Neo4JConnection getConnection() throws ResourceException
+   public GraphDatabaseService getConnection() throws ResourceException
    {
       log.info("getConnection()");
-      return (Neo4JConnection)connectionManager.allocateConnection(mcf, null);
+      return (GraphDatabaseService)connectionManager.allocateConnection(mcf, null);
    }
 
    /**

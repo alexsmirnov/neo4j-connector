@@ -26,6 +26,8 @@ import java.io.Serializable;
 import javax.resource.Referenceable;
 import javax.resource.ResourceException;
 
+import org.neo4j.graphdb.GraphDatabaseService;
+
 /**
  * Neo4JConnectionFactory
  *
@@ -39,6 +41,6 @@ public interface Neo4JConnectionFactory extends Serializable, Referenceable
     * @return Neo4JConnection instance
     * @exception ResourceException Thrown if a connection can't be obtained
     */
-   public Neo4JConnection getConnection() throws ResourceException;
+   public GraphDatabaseService getConnection() throws ResourceException;
 
 }

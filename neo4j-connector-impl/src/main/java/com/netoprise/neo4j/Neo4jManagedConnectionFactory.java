@@ -25,7 +25,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-
 import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
@@ -37,14 +36,12 @@ import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
-
 import javax.security.auth.Subject;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.Config;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
-import com.netoprise.neo4j.connection.Neo4JConnection;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
 import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
@@ -54,7 +51,7 @@ import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
  * 
  * @version $Revision: $
  */
-@ConnectionDefinition(connectionFactory = Neo4JConnectionFactory.class, connectionFactoryImpl = Neo4JConnectionFactoryImpl.class, connection = Neo4JConnection.class, connectionImpl = Neo4JConnectionImpl.class)
+@ConnectionDefinition(connectionFactory = Neo4JConnectionFactory.class, connectionFactoryImpl = Neo4JConnectionFactoryImpl.class, connection = GraphDatabaseService.class, connectionImpl = Neo4JConnectionImpl.class)
 public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 		ResourceAdapterAssociation {
 

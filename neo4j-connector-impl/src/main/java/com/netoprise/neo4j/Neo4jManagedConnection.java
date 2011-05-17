@@ -38,9 +38,9 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
-import com.netoprise.neo4j.connection.Neo4JConnection;
 import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
 import com.netoprise.neo4j.transaction.PlatformTransactionProvider;
 
@@ -53,63 +53,87 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 	private final class Neo4jXAResource implements XAResource {
 
+		private int timeout;
+
 		@Override
-		public void commit(Xid arg0, boolean arg1) throws XAException {
-			// TODO Auto-generated method stub
+		public void commit(Xid xid, boolean onePhase) throws XAException {
+			if(null != transaction){
+				log.info("XA Transaction commit for Xid "+xid.toString());
+				transaction.success();
+				if(onePhase){
+					transaction.finish();
+					transaction = null;
+				}
+			} else {
+				throw new XAException(XAException.XAER_RMERR);
+			}
+		}
+
+		@Override
+		public void end(Xid xid, int arg1) throws XAException {
+			log.info("XA Transaction end for Xid "+xid.toString());
+			if(null != transaction){
+				transaction.finish();
+				transaction = null;
+			}
 
 		}
 
 		@Override
-		public void end(Xid arg0, int arg1) throws XAException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void forget(Xid arg0) throws XAException {
-			// TODO Auto-generated method stub
-
+		public void forget(Xid xid) throws XAException {
+			log.info("XA Transaction forget for Xid "+xid.toString());
+			throw new XAException(XAException.XAER_PROTO);
 		}
 
 		@Override
 		public int getTransactionTimeout() throws XAException {
-			// TODO Auto-generated method stub
-			return 0;
+			return this.timeout;
 		}
 
 		@Override
 		public boolean isSameRM(XAResource arg0) throws XAException {
-			// TODO Auto-generated method stub
-			return false;
+			return this == arg0;
 		}
 
 		@Override
-		public int prepare(Xid arg0) throws XAException {
-			// TODO Auto-generated method stub
-			return 0;
+		public int prepare(Xid xid) throws XAException {
+			log.info("XA Transaction prepare for Xid "+xid.toString());
+			throw new XAException(XAException.XAER_PROTO);
 		}
 
 		@Override
 		public Xid[] recover(int arg0) throws XAException {
-			// TODO Auto-generated method stub
-			return null;
+			// two-phase commits not supported
+			return new Xid[0];
 		}
 
 		@Override
-		public void rollback(Xid arg0) throws XAException {
-			// TODO Auto-generated method stub
+		public void rollback(Xid xid) throws XAException {
+			if(null != transaction){
+				log.info("XA Transaction rollback for Xid "+xid.toString());
+				transaction.failure();
+			} else {
+				throw new XAException(XAException.XAER_RMERR);
+			}
 
 		}
 
 		@Override
 		public boolean setTransactionTimeout(int arg0) throws XAException {
-			// TODO Auto-generated method stub
-			return false;
+			this.timeout = arg0;
+			return true;
 		}
 
 		@Override
-		public void start(Xid arg0, int arg1) throws XAException {
-			// TODO Auto-generated method stub
+		public void start(Xid xid, int flags) throws XAException {
+			if(null != transaction){
+				if(TMJOIN != flags && TMRESUME != flags){
+					throw new XAException(XAException.XAER_DUPID);
+				}
+			} else {
+				log.info("XA Transaction begin for Xid "+xid.toString());
+				transaction = managedConnectionFactory.getDatabase().beginTx();
+			}
 
 		}
 
@@ -125,8 +149,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 * 
 	 */
 	private final class Neo4jLocalTransaction implements LocalTransaction {
-
-		private Transaction transaction;
 
 		public boolean isActive() {
 			return null != transaction;
@@ -160,7 +182,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 		@Override
 		public void begin() throws ResourceException {
 			log.info("Transaction begin");
-			this.transaction = managedConnectionFactory.getDatabase().beginTx();
+			transaction = managedConnectionFactory.getDatabase().beginTx();
 			fireBeginEvent();
 		}
 	}
@@ -210,6 +232,8 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	/** The logger */
 	private static Logger log = Logger.getLogger("Neo4jManagedConnection");
 
+	private Transaction transaction;
+
 	/** The logwriter */
 	private PrintWriter logwriter;
 
@@ -220,7 +244,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	private List<ConnectionEventListener> listeners;
 
 	/** Connection */
-	private Object connection;
+	private GraphDatabaseService connection;
 
 	private LocalTransaction localTransaction;
 
@@ -258,7 +282,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 * @throws ResourceException
 	 *             generic exception if operation fails
 	 */
-	public Object getConnection(Subject subject,
+	public GraphDatabaseService getConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		log.info("getConnection()");
 		connection = new Neo4JConnectionImpl(this, managedConnectionFactory);
@@ -335,13 +359,13 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	/**
 	 * Close handle
 	 * 
-	 * @param handle
+	 * @param neo4jConnectionImpl
 	 *            The handle
 	 */
-	public void closeHandle(Neo4JConnection handle) {
+	public void closeHandle(GraphDatabaseService neo4jConnectionImpl) {
 		ConnectionEvent event = new ConnectionEvent(this,
 				ConnectionEvent.CONNECTION_CLOSED);
-		event.setConnectionHandle(handle);
+		event.setConnectionHandle(neo4jConnectionImpl);
 		fireCloseEvent(event);
 
 	}

@@ -28,19 +28,19 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.event.KernelEventHandler;
+import org.neo4j.graphdb.event.TransactionEventHandler;
 import org.neo4j.graphdb.index.IndexManager;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import com.netoprise.neo4j.Neo4jManagedConnection;
 import com.netoprise.neo4j.Neo4jManagedConnectionFactory;
-import com.netoprise.neo4j.connection.Neo4JConnection;
 
 /**
  * Neo4JConnectionImpl
  * 
  * @version $Revision: $
  */
-public class Neo4JConnectionImpl implements Neo4JConnection {
+public class Neo4JConnectionImpl implements GraphDatabaseService {
 	/** The logger */
 	private static Logger log = Logger.getLogger("Neo4JConnectionImpl");
 
@@ -67,13 +67,6 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 		this.graphDatabase = mcf.getDatabase();
 	}
 
-
-	/**
-	 * Close
-	 */
-	public void close() {
-		mc.closeHandle(this);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -152,6 +145,35 @@ public class Neo4JConnectionImpl implements Neo4JConnection {
 	 */
 	public Transaction beginTx() {
 		return graphDatabase.beginTx();
+	}
+
+
+	public void shutdown() {
+		mc.closeHandle(this);
+	}
+
+
+	public <T> TransactionEventHandler<T> registerTransactionEventHandler(
+			TransactionEventHandler<T> handler) {
+		return graphDatabase.registerTransactionEventHandler(handler);
+	}
+
+
+	public <T> TransactionEventHandler<T> unregisterTransactionEventHandler(
+			TransactionEventHandler<T> handler) {
+		return graphDatabase.unregisterTransactionEventHandler(handler);
+	}
+
+
+	public KernelEventHandler registerKernelEventHandler(
+			KernelEventHandler handler) {
+		return graphDatabase.registerKernelEventHandler(handler);
+	}
+
+
+	public KernelEventHandler unregisterKernelEventHandler(
+			KernelEventHandler handler) {
+		return graphDatabase.unregisterKernelEventHandler(handler);
 	}
 
 }
