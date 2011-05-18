@@ -57,32 +57,17 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void commit(Xid xid, boolean onePhase) throws XAException {
-			if(null != transaction){
-				log.info("XA Transaction commit for Xid "+xid.toString());
-				transaction.success();
-				if(onePhase){
-					transaction.finish();
-					transaction = null;
-				}
-			} else {
-				throw new XAException(XAException.XAER_RMERR);
-			}
+			log.info("XA Transaction commit for Xid " + xid.toString());
 		}
 
 		@Override
 		public void end(Xid xid, int arg1) throws XAException {
-			log.info("XA Transaction end for Xid "+xid.toString());
-			if(null != transaction){
-				transaction.finish();
-				transaction = null;
-			}
-
+			log.info("XA Transaction end for Xid " + xid.toString());
 		}
 
 		@Override
 		public void forget(Xid xid) throws XAException {
-			log.info("XA Transaction forget for Xid "+xid.toString());
-			throw new XAException(XAException.XAER_PROTO);
+			log.info("XA Transaction forget for Xid " + xid.toString());
 		}
 
 		@Override
@@ -97,8 +82,8 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public int prepare(Xid xid) throws XAException {
-			log.info("XA Transaction prepare for Xid "+xid.toString());
-			throw new XAException(XAException.XAER_PROTO);
+			log.info("XA Transaction prepare for Xid " + xid.toString());
+			return XA_OK;
 		}
 
 		@Override
@@ -109,13 +94,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void rollback(Xid xid) throws XAException {
-			if(null != transaction){
-				log.info("XA Transaction rollback for Xid "+xid.toString());
-				transaction.failure();
-			} else {
-				throw new XAException(XAException.XAER_RMERR);
-			}
-
+			log.info("XA Transaction rollback for Xid " + xid.toString());
 		}
 
 		@Override
@@ -126,15 +105,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void start(Xid xid, int flags) throws XAException {
-			if(null != transaction){
-				if(TMJOIN != flags && TMRESUME != flags){
-					throw new XAException(XAException.XAER_DUPID);
-				}
-			} else {
-				log.info("XA Transaction begin for Xid "+xid.toString());
-				transaction = managedConnectionFactory.getDatabase().beginTx();
-			}
-
+			log.info("XA Transaction begin for Xid " + xid.toString());
 		}
 
 	}
@@ -187,48 +158,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 		}
 	}
 
-	/**
-	 * Dummy transaction used when transaction management delegated to the container.
-	 * @author asmirnov
-	 *
-	 */
-	private final class DummyLocalTransaction implements LocalTransaction {
 
-		private boolean active;
-		
-		public boolean isActive() {
-			return active;
-		}
-
-		@Override
-		public void rollback() throws ResourceException {
-			log.info("Dummy Transaction rollback");
-			if (active) {
-				finish();
-				fireRollbackEvent();
-			}
-		}
-
-		public void finish() {
-			active = false;
-		}
-
-		@Override
-		public void commit() throws ResourceException {
-			log.info("Dummy Transaction commited");
-			if (active) {
-				finish();
-				fireCommitEvent();
-			}
-		}
-
-		@Override
-		public void begin() throws ResourceException {
-			log.info("Dummy Transaction begin");
-			active = true;
-			fireBeginEvent();
-		}
-	}
 	/** The logger */
 	private static Logger log = Logger.getLogger("Neo4jManagedConnection");
 
@@ -261,12 +191,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 		this.logwriter = null;
 		this.listeners = new ArrayList<ConnectionEventListener>(1);
 		this.connection = null;
-		// check transaction manager
-		if(PlatformTransactionProvider.JEE_JTA.equals(mcf.getResourceAdapter().getTxManager())){
-			this.localTransaction = new DummyLocalTransaction();
-		} else {
-			this.localTransaction = new Neo4jLocalTransaction();
-		}
+		this.localTransaction = new Neo4jLocalTransaction();
 		this.xaResource = new Neo4jXAResource();
 	}
 
@@ -377,8 +302,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	}
 
 	private void fireRollbackEvent() {
-		ConnectionEvent event = new ConnectionEvent(
-				this,
+		ConnectionEvent event = new ConnectionEvent(this,
 				ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK);
 		for (ConnectionEventListener cel : listeners) {
 			cel.localTransactionRolledback(event);
@@ -386,8 +310,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	}
 
 	private void fireCommitEvent() {
-		ConnectionEvent event = new ConnectionEvent(
-				this,
+		ConnectionEvent event = new ConnectionEvent(this,
 				ConnectionEvent.LOCAL_TRANSACTION_COMMITTED);
 		for (ConnectionEventListener cel : listeners) {
 			cel.localTransactionCommitted(event);
@@ -395,8 +318,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	}
 
 	private void fireBeginEvent() {
-		ConnectionEvent event = new ConnectionEvent(
-				this,
+		ConnectionEvent event = new ConnectionEvent(this,
 				ConnectionEvent.LOCAL_TRANSACTION_STARTED);
 		for (ConnectionEventListener cel : listeners) {
 			cel.localTransactionStarted(event);

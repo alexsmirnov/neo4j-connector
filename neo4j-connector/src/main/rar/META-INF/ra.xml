@@ -23,13 +23,18 @@
                <config-property-name>dir</config-property-name>
                <config-property-type>java.lang.String</config-property-type>
             </config-property>
+            <config-property>
+               <config-property-name>xa</config-property-name>
+               <config-property-type>java.lang.Boolean</config-property-type>
+               <config-property-value>false</config-property-value>
+            </config-property>
 
             <connectionfactory-interface>com.netoprise.neo4j.connection.Neo4JConnectionFactory</connectionfactory-interface>
             <connectionfactory-impl-class>com.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl</connectionfactory-impl-class>
             <connection-interface>com.netoprise.neo4j.connection.Neo4JConnection</connection-interface>
             <connection-impl-class>com.netoprise.neo4j.connection.Neo4JConnectionImpl</connection-impl-class>
          </connection-definition>
-         <transaction-support>LocalTransaction</transaction-support>
+         <transaction-support>XATransaction</transaction-support>
          <reauthentication-support>false</reauthentication-support>
       </outbound-resourceadapter>
    </resourceadapter>

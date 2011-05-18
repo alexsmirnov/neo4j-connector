@@ -38,175 +38,179 @@ import javax.transaction.xa.XAResource;
 
 /**
  * Neo4jResourceAdapter
- *
+ * 
  * @version $Revision: $
  */
-@Connector(
-   reauthenticationSupport = false,
-   transactionSupport = TransactionSupport.TransactionSupportLevel.LocalTransaction)
-public class Neo4jResourceAdapter implements ResourceAdapter
-{
+@Connector(reauthenticationSupport = false, transactionSupport = TransactionSupport.TransactionSupportLevel.XATransaction)
+public class Neo4jResourceAdapter implements ResourceAdapter {
 
-   /** The logger */
-   private static Logger log = Logger.getLogger("Neo4jResourceAdapter");
+	/** The logger */
+	private static Logger log = Logger.getLogger("Neo4jResourceAdapter");
 
-   /** dir */
-   @ConfigProperty(defaultValue = "/tmp/graphdb")
-   private String dir;
+	/** dir */
+	@ConfigProperty(defaultValue = "/tmp/graphdb")
+	private String dir;
 
-   @ConfigProperty(defaultValue = "native")
-   private String txManager;
+	@ConfigProperty(defaultValue = "false")
+	private boolean xa;
 
-   private final Set<Neo4jManagedConnectionFactory> factories = new HashSet<Neo4jManagedConnectionFactory>();
-   /**
-    * Default constructor
-    */
-   public Neo4jResourceAdapter()
-   {
+	private final Set<Neo4jManagedConnectionFactory> factories = new HashSet<Neo4jManagedConnectionFactory>();
 
-   }
+	/**
+	 * Default constructor
+	 */
+	public Neo4jResourceAdapter() {
 
-   /** 
-    * Set dir
-    * @param dir The value
-    */
-   public void setDir(String dir)
-   {
-      this.dir = dir;
-   }
-
-   /** 
-    * Get dir
-    * @return The value
-    */
-   public String getDir()
-   {
-      return dir;
-   }
-
-   /**
- * @return the txManager
- */
-public String getTxManager() {
-	return txManager;
-}
-
-/**
- * @param txManager the txManager to set
- */
-public void setTxManager(String txManager) {
-	this.txManager = txManager;
-}
-
-public void addFactory(Neo4jManagedConnectionFactory factory){
-	   factories.add(factory);
-   }
-   /**
-    * This is called during the activation of a message endpoint.
-    *
-    * @param endpointFactory A message endpoint factory instance.
-    * @param spec An activation spec JavaBean instance.
-    * @throws ResourceException generic exception 
-    */
-   public void endpointActivation(MessageEndpointFactory endpointFactory,
-      ActivationSpec spec) throws ResourceException
-   {
-      log.info("endpointActivation()");
-   }
-
-   /**
-    * This is called when a message endpoint is deactivated. 
-    *
-    * @param endpointFactory A message endpoint factory instance.
-    * @param spec An activation spec JavaBean instance.
-    */
-   public void endpointDeactivation(MessageEndpointFactory endpointFactory,
-      ActivationSpec spec)
-   {
-      log.info("endpointDeactivation()");
-   }
-
-   /**
-    * This is called when a resource adapter instance is bootstrapped.
-    *
-    * @param ctx A bootstrap context containing references 
-    * @throws ResourceAdapterInternalException indicates bootstrap failure.
-    */
-   public void start(BootstrapContext ctx)
-      throws ResourceAdapterInternalException
-   {
-      log.info("start()");
-      for (Neo4jManagedConnectionFactory factory : factories) {
-		factory.start();
 	}
-   }
 
-   /**
-    * This is called when a resource adapter instance is undeployed or
-    * during application server shutdown. 
-    */
-   public void stop()
-   {
-      log.info("stop()");
-      for (Neo4jManagedConnectionFactory factory : factories) {
-  		factory.stop();
-      }
-   }
+	/**
+	 * Set dir
+	 * 
+	 * @param dir
+	 *            The value
+	 */
+	public void setDir(String dir) {
+		this.dir = dir;
+	}
 
-   /**
-    * This method is called by the application server during crash recovery.
-    *
-    * @param specs An array of ActivationSpec JavaBeans 
-    * @throws ResourceException generic exception 
-    * @return An array of XAResource objects
-    */
-   public XAResource[] getXAResources(ActivationSpec[] specs)
-      throws ResourceException
-   {
-      log.info("getXAResources()");
-      return null;
-   }
+	/**
+	 * Get dir
+	 * 
+	 * @return The value
+	 */
+	public String getDir() {
+		return dir;
+	}
 
-   /** 
-    * Returns a hash code value for the object.
-    * @return A hash code value for this object.
-    */
-   @Override
-   public int hashCode()
-   {
-      int result = 17;
-      if (dir != null)
-         result += 31 * result + 7 * dir.hashCode();
-      else
-         result += 31 * result + 7;
-      return result;
-   }
+	/**
+	 * @return the xa
+	 */
+	public boolean isXa() {
+		return xa;
+	}
 
-   /** 
-    * Indicates whether some other object is equal to this one.
-    * @param other The reference object with which to compare.
-    * @return true if this object is the same as the obj argument, false otherwise.
-    */
-   @Override
-   public boolean equals(Object other)
-   {
-      if (other == null)
-         return false;
-      if (other == this)
-         return true;
-      if (!(other instanceof Neo4jResourceAdapter))
-         return false;
-      Neo4jResourceAdapter obj = (Neo4jResourceAdapter)other;
-      boolean result = true; 
-      if (result)
-      {
-         if (dir == null)
-            result = obj.getDir() == null;
-         else
-            result = dir.equals(obj.getDir());
-      }
-      return result;
-   }
+	/**
+	 * @param xa
+	 *            the xa to set
+	 */
+	public void setXa(boolean xa) {
+		this.xa = xa;
+	}
 
+	public void addFactory(Neo4jManagedConnectionFactory factory) {
+		factories.add(factory);
+	}
+
+	/**
+	 * This is called during the activation of a message endpoint.
+	 * 
+	 * @param endpointFactory
+	 *            A message endpoint factory instance.
+	 * @param spec
+	 *            An activation spec JavaBean instance.
+	 * @throws ResourceException
+	 *             generic exception
+	 */
+	public void endpointActivation(MessageEndpointFactory endpointFactory,
+			ActivationSpec spec) throws ResourceException {
+		log.info("endpointActivation()");
+	}
+
+	/**
+	 * This is called when a message endpoint is deactivated.
+	 * 
+	 * @param endpointFactory
+	 *            A message endpoint factory instance.
+	 * @param spec
+	 *            An activation spec JavaBean instance.
+	 */
+	public void endpointDeactivation(MessageEndpointFactory endpointFactory,
+			ActivationSpec spec) {
+		log.info("endpointDeactivation()");
+	}
+
+	/**
+	 * This is called when a resource adapter instance is bootstrapped.
+	 * 
+	 * @param ctx
+	 *            A bootstrap context containing references
+	 * @throws ResourceAdapterInternalException
+	 *             indicates bootstrap failure.
+	 */
+	public void start(BootstrapContext ctx)
+			throws ResourceAdapterInternalException {
+		log.info("start()");
+		for (Neo4jManagedConnectionFactory factory : factories) {
+			factory.start();
+		}
+	}
+
+	/**
+	 * This is called when a resource adapter instance is undeployed or during
+	 * application server shutdown.
+	 */
+	public void stop() {
+		log.info("stop()");
+		for (Neo4jManagedConnectionFactory factory : factories) {
+			factory.stop();
+		}
+	}
+
+	/**
+	 * This method is called by the application server during crash recovery.
+	 * 
+	 * @param specs
+	 *            An array of ActivationSpec JavaBeans
+	 * @throws ResourceException
+	 *             generic exception
+	 * @return An array of XAResource objects
+	 */
+	public XAResource[] getXAResources(ActivationSpec[] specs)
+			throws ResourceException {
+		log.info("getXAResources()");
+		return null;
+	}
+
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return A hash code value for this object.
+	 */
+	@Override
+	public int hashCode() {
+		int result = 17;
+		if (dir != null)
+			result += 31 * result + 7 * dir.hashCode();
+		else
+			result += 31 * result + 7;
+		return result;
+	}
+
+	/**
+	 * Indicates whether some other object is equal to this one.
+	 * 
+	 * @param other
+	 *            The reference object with which to compare.
+	 * @return true if this object is the same as the obj argument, false
+	 *         otherwise.
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if (other == null)
+			return false;
+		if (other == this)
+			return true;
+		if (!(other instanceof Neo4jResourceAdapter))
+			return false;
+		Neo4jResourceAdapter obj = (Neo4jResourceAdapter) other;
+		boolean result = true;
+		if (result) {
+			if (dir == null)
+				result = obj.getDir() == null;
+			else
+				result = dir.equals(obj.getDir());
+		}
+		return result;
+	}
 
 }

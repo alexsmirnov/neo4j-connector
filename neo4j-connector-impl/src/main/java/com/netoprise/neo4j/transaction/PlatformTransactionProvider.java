@@ -23,6 +23,7 @@ public class PlatformTransactionProvider extends TransactionManagerProvider {
 
 	public PlatformTransactionProvider() {
 		super(JEE_JTA);
+		log.info("Load PlatformTransactionManagerProvider");
 	}
 
 	@Override

@@ -36,6 +36,7 @@ import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
+import javax.resource.spi.TransactionSupport;
 import javax.security.auth.Subject;
 
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -45,6 +46,7 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 import com.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
 import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
+import com.netoprise.neo4j.transaction.PlatformTransactionProvider;
 
 /**
  * Neo4jManagedConnectionFactory
@@ -53,7 +55,7 @@ import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
  */
 @ConnectionDefinition(connectionFactory = Neo4JConnectionFactory.class, connectionFactoryImpl = Neo4JConnectionFactoryImpl.class, connection = GraphDatabaseService.class, connectionImpl = Neo4JConnectionImpl.class)
 public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
-		ResourceAdapterAssociation {
+		ResourceAdapterAssociation, TransactionSupport {
 
 	/** The serial version UID */
 	private static final long serialVersionUID = 1L;
@@ -78,7 +80,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	@ConfigProperty
 	private String dir;
 	@ConfigProperty
-	private String txManager;
+	private boolean xa;
 
 	/**
 	 * Default constructor
@@ -88,7 +90,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	}
 
 	public String getDir() {
-		if(null == dir){
+		if (null == dir) {
 			return ra.getDir();
 		}
 		return dir;
@@ -98,15 +100,12 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 		this.dir = dir;
 	}
 
-	public String getTxManager() {
-		if(null == txManager){
-			return ra.getTxManager();
-		}
-		return txManager;
+	public boolean isXa() {
+		return xa || ra.isXa();
 	}
 
-	public void setTxManager(String txManager) {
-		this.txManager = txManager;
+	public void setXa(boolean xa) {
+		this.xa = xa;
 	}
 
 	/**
@@ -239,7 +238,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 
 	public void destroyManagedConnection(Neo4jManagedConnection connection) {
 		connectionsCreated--;
-		if (connectionsCreated <= 0 ) {
+		if (connectionsCreated <= 0) {
 			shutdownDatabase();
 		}
 	}
@@ -263,8 +262,11 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	private void createDatabase() {
 		if (null == database) {
 			HashMap<String, String> config = new HashMap<String, String>(2);
-			config.put(Config.TXMANAGER_IMPLEMENTATION, getTxManager());	
-			database = new EmbeddedGraphDatabase(getDir(),config);
+			if (isXa()) {
+				config.put(Config.TXMANAGER_IMPLEMENTATION,
+						PlatformTransactionProvider.JEE_JTA);
+			}
+			database = new EmbeddedGraphDatabase(getDir(), config);
 		}
 	}
 
@@ -302,6 +304,15 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	@Override
+	public TransactionSupportLevel getTransactionSupport() {
+		if (isXa()) {
+			return TransactionSupportLevel.XATransaction;
+		} else {
+			return TransactionSupportLevel.LocalTransaction;
 		}
 	}
 
