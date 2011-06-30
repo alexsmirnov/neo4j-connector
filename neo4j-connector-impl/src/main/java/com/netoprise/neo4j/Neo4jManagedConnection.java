@@ -24,7 +24,6 @@ package com.netoprise.neo4j;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionEvent;
@@ -42,7 +41,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
 import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
-import com.netoprise.neo4j.transaction.PlatformTransactionProvider;
 
 /**
  * Neo4jManagedConnection
@@ -57,17 +55,14 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void commit(Xid xid, boolean onePhase) throws XAException {
-			log.info("XA Transaction commit for Xid " + xid.toString());
 		}
 
 		@Override
 		public void end(Xid xid, int arg1) throws XAException {
-			log.info("XA Transaction end for Xid " + xid.toString());
 		}
 
 		@Override
 		public void forget(Xid xid) throws XAException {
-			log.info("XA Transaction forget for Xid " + xid.toString());
 		}
 
 		@Override
@@ -82,7 +77,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public int prepare(Xid xid) throws XAException {
-			log.info("XA Transaction prepare for Xid " + xid.toString());
 			return XA_OK;
 		}
 
@@ -94,7 +88,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void rollback(Xid xid) throws XAException {
-			log.info("XA Transaction rollback for Xid " + xid.toString());
 		}
 
 		@Override
@@ -105,7 +98,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void start(Xid xid, int flags) throws XAException {
-			log.info("XA Transaction begin for Xid " + xid.toString());
 		}
 
 	}
@@ -127,7 +119,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void rollback() throws ResourceException {
-			log.info("Transaction rollback");
 			if (null != transaction) {
 				transaction.failure();
 				finish();
@@ -142,7 +133,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void commit() throws ResourceException {
-			log.info("Transaction commited");
 			if (null != transaction) {
 				transaction.success();
 				finish();
@@ -152,15 +142,12 @@ public class Neo4jManagedConnection implements ManagedConnection {
 
 		@Override
 		public void begin() throws ResourceException {
-			log.info("Transaction begin");
 			transaction = managedConnectionFactory.getDatabase().beginTx();
 			fireBeginEvent();
 		}
 	}
 
 
-	/** The logger */
-	private static Logger log = Logger.getLogger("Neo4jManagedConnection");
 
 	private Transaction transaction;
 
@@ -188,7 +175,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 */
 	public Neo4jManagedConnection(Neo4jManagedConnectionFactory mcf) {
 		this.managedConnectionFactory = mcf;
-		this.logwriter = null;
+		this.logwriter = new PrintWriter(System.out);
 		this.listeners = new ArrayList<ConnectionEventListener>(1);
 		this.connection = null;
 		this.localTransaction = new Neo4jLocalTransaction();
@@ -209,7 +196,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 */
 	public GraphDatabaseService getConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
-		log.info("getConnection()");
+		logwriter.append("getConnection()");
 		connection = new Neo4JConnectionImpl(this, managedConnectionFactory);
 		return connection;
 	}
@@ -224,7 +211,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *             generic exception if operation fails
 	 */
 	public void associateConnection(Object connection) throws ResourceException {
-		log.info("associateConnection()");
+		logwriter.append("associateConnection()");
 	}
 
 	/**
@@ -237,7 +224,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	public void cleanup() throws ResourceException
 
 	{
-		log.info("cleanup()");
+		logwriter.append("cleanup()");
 		this.connection = null;
 	}
 
@@ -248,7 +235,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *             generic exception if operation fails
 	 */
 	public void destroy() throws ResourceException {
-		log.info("destroy()");
+		logwriter.append("destroy()");
 		this.connection = null;
 		this.localTransaction = null;
 		managedConnectionFactory.destroyManagedConnection(this);
@@ -261,7 +248,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *            A new ConnectionEventListener to be registered
 	 */
 	public void addConnectionEventListener(ConnectionEventListener listener) {
-		log.info("addConnectionEventListener()");
+		logwriter.append("addConnectionEventListener()");
 		if (listener == null)
 			throw new IllegalArgumentException("Listener is null");
 		listeners.add(listener);
@@ -275,7 +262,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *            already registered connection event listener to be removed
 	 */
 	public void removeConnectionEventListener(ConnectionEventListener listener) {
-		log.info("removeConnectionEventListener()");
+		logwriter.append("removeConnectionEventListener()");
 		if (listener == null)
 			throw new IllegalArgumentException("Listener is null");
 		listeners.remove(listener);
@@ -334,7 +321,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *             generic exception if operation fails
 	 */
 	public PrintWriter getLogWriter() throws ResourceException {
-		log.info("getLogWriter()");
 		return logwriter;
 	}
 
@@ -347,7 +333,6 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *             generic exception if operation fails
 	 */
 	public void setLogWriter(PrintWriter out) throws ResourceException {
-		log.info("setLogWriter()");
 		logwriter = out;
 	}
 
@@ -359,7 +344,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *             generic exception if operation fails
 	 */
 	public LocalTransaction getLocalTransaction() throws ResourceException {
-		log.info("getLocalTransaction()");
+		logwriter.append("getLocalTransaction()");
 		return localTransaction;
 	}
 
@@ -371,7 +356,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *             generic exception if operation fails
 	 */
 	public XAResource getXAResource() throws ResourceException {
-		log.info("getXAResource()");
+		logwriter.append("getXAResource()");
 		return this.xaResource;
 	}
 
@@ -384,7 +369,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 *             generic exception if operation fails
 	 */
 	public ManagedConnectionMetaData getMetaData() throws ResourceException {
-		log.info("getMetaData()");
+		logwriter.append("getMetaData()");
 		return new Neo4jManagedConnectionMetaData();
 	}
 

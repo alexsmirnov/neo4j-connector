@@ -60,9 +60,6 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	/** The serial version UID */
 	private static final long serialVersionUID = 1L;
 
-	/** The logger */
-	private static Logger log = Logger
-			.getLogger("Neo4jManagedConnectionFactory");
 
 	/** The resource adapter */
 	private Neo4jResourceAdapter ra;
@@ -86,7 +83,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 * Default constructor
 	 */
 	public Neo4jManagedConnectionFactory() {
-
+		this.logwriter = new PrintWriter(System.out);
 	}
 
 	public String getDir() {
@@ -121,7 +118,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 */
 	public Object createConnectionFactory(ConnectionManager cxManager)
 			throws ResourceException {
-		log.info("createConnectionFactory()");
+		logwriter.append("createConnectionFactory()");
 		return new Neo4JConnectionFactoryImpl(this, cxManager);
 	}
 
@@ -152,7 +149,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 */
 	public ManagedConnection createManagedConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
-		log.info("createManagedConnection()");
+		logwriter.append("createManagedConnection()");
 		createDatabase();
 		connectionsCreated++;
 		return new Neo4jManagedConnection(this);
@@ -176,7 +173,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	public ManagedConnection matchManagedConnections(Set connectionSet,
 			Subject subject, ConnectionRequestInfo cxRequestInfo)
 			throws ResourceException {
-		log.info("matchManagedConnections()");
+		logwriter.append("matchManagedConnections()");
 		ManagedConnection result = null;
 		Iterator it = connectionSet.iterator();
 		while (result == null && it.hasNext()) {
@@ -197,7 +194,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 *             generic exception
 	 */
 	public PrintWriter getLogWriter() throws ResourceException {
-		log.info("getLogWriter()");
+		logwriter.append("getLogWriter()");
 		return logwriter;
 	}
 
@@ -210,7 +207,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 *             generic exception
 	 */
 	public void setLogWriter(PrintWriter out) throws ResourceException {
-		log.info("setLogWriter()");
+		logwriter.append("setLogWriter()");
 		logwriter = out;
 	}
 
@@ -220,7 +217,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 * @return The handle
 	 */
 	public Neo4jResourceAdapter getResourceAdapter() {
-		log.info("getResourceAdapter()");
+		logwriter.append("getResourceAdapter()");
 		return ra;
 	}
 
@@ -231,7 +228,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	 *            The handle
 	 */
 	public void setResourceAdapter(ResourceAdapter ra) {
-		log.info("setResourceAdapter()");
+		logwriter.append("setResourceAdapter()");
 		this.ra = (Neo4jResourceAdapter) ra;
 		this.ra.addFactory(this);
 	}

@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-graph-algo</artifactId>
-			<version>1.4.M01</version>
+			<version>1.4.M05</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>geronimo-jta_1.1_spec</artifactId>
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-kernel</artifactId>
-			<version>1.4.M01</version>
+			<version>1.4.M05</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>geronimo-jta_1.1_spec</artifactId>

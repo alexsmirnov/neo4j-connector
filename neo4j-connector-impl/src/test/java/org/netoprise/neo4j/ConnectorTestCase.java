@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
+import javax.transaction.UserTransaction;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -77,7 +78,8 @@ public class ConnectorTestCase
    /** Resource */
    @Resource(mappedName = "java:/eis/ConnectorTestCase")
    private Neo4JConnectionFactory connectionFactory;
-
+   
+ 
    /**
     * Test Basic
     *
