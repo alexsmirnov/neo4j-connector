@@ -8,20 +8,38 @@
 	<packaging>pom</packaging>
 	<version>0.1-SNAPSHOT</version>
 	<url>http://repository.jboss.org</url>
-        <modules>
-           <module>neo4j-connector-api</module>
-           <module>neo4j-connector-impl</module>
-           <module>neo4j-connector</module>
-        </modules>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<arquillian.version>1.0.0.CR1</arquillian.version>
+		<jbossas.version>7.0.0.Final</jbossas.version>
+	</properties>
+	<modules>
+		<module>neo4j-connector-api</module>
+		<module>neo4j-connector-impl</module>
+		<module>neo4j-connector</module>
+	</modules>
 	<dependencyManagement>
 		<dependencies>
+		<!-- project modules -->
+		    <dependency>
+		        <groupId>com.netoprise</groupId>
+		        <artifactId>neo4j-connector-api</artifactId>
+		        <version>0.1-SNAPSHOT</version>
+		    </dependency>
+		    <dependency>
+		        <groupId>com.netoprise</groupId>
+		        <artifactId>neo4j-connector-impl</artifactId>
+		        <version>0.1-SNAPSHOT</version>
+		    </dependency>
+		    <!-- JCA -->
 			<dependency>
 				<groupId>org.jboss.ironjacamar</groupId>
 				<artifactId>ironjacamar-depchain</artifactId>
-				<version>1.0.0.Beta6</version>
+				<version>1.0.0.Final</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!-- Graph database -->
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j</artifactId>
@@ -29,27 +47,72 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+						<!-- Tests -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.8.5</version>
+				<scope>test</scope>
+			</dependency>
+						<!-- Arquillian -->
+			<dependency>
+				<groupId>org.jboss.arquillian.junit</groupId>
+				<artifactId>arquillian-junit-container</artifactId>
+				<version>${arquillian.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+				<version>${arquillian.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.as</groupId>
+				<artifactId>jboss-as-arquillian-container-managed</artifactId>
+				<version>${jbossas.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.as</groupId>
+				<artifactId>jboss-as-embedded</artifactId>
+				<version>${jbossas.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.as</groupId>
+				<artifactId>jboss-as-dist</artifactId>
+				<version>${jbossas.version}</version>
+				<type>tar.gz</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
-             <pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-                                <version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-rar-plugin</artifactId>
-                                <version>2.2</version>
-			</plugin>
-		</plugins>
-           </pluginManagement>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-rar-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<repositories>
 		<repository>

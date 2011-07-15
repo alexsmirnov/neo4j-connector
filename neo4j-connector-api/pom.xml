@@ -5,12 +5,11 @@
 		<groupId>com.netoprise</groupId>
 		<artifactId>neo4j-connector-parent</artifactId>
 		<version>0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.netoprise</groupId>
 	<artifactId>neo4j-connector-api</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
 	<url>http://repository.jboss.org</url>
 
 
@@ -42,7 +41,7 @@
 		<dependency>
 			<groupId>org.jboss.ironjacamar</groupId>
 			<artifactId>ironjacamar-spec-api</artifactId>
-			<version>1.0.0.Beta6</version>
+			<version>1.0.0.Final</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

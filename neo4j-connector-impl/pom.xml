@@ -5,22 +5,18 @@
 		<groupId>com.netoprise</groupId>
 		<artifactId>neo4j-connector-parent</artifactId>
 		<version>0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.netoprise</groupId>
 	<artifactId>neo4j-connector-impl</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
 	<url>http://repository.jboss.org</url>
-
-
 
 	<dependencies>
 		<dependency>
 			<groupId>com.netoprise</groupId>
 			<artifactId>neo4j-connector-api</artifactId>
-			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- Neo4j -->
 		<dependency>
@@ -42,87 +38,8 @@
 		<dependency>
 			<groupId>org.jboss.ironjacamar</groupId>
 			<artifactId>ironjacamar-spec-api</artifactId>
-			<version>1.0.0.Beta6</version>
+			<version>1.0.0.Final</version>
 			<scope>provided</scope>
-		</dependency>
-		<!-- Tests -->
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-api</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-spi</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-impl</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-common-impl-papaki</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-core-api</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-core-impl</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-deployers-common</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-deployers-fungal</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-embedded-arquillian</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-embedded</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-validator</artifactId>
-			<version>1.0.0.Beta6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.integration</groupId>
-			<artifactId>jboss-transaction-spi</artifactId>
-			<version>5.1.0.CR1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-jaspi-api</artifactId>
-			<version>1.0.0.GA</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.javaee</groupId>
@@ -130,53 +47,10 @@
 			<version>1.0.1.GA</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.jbossts</groupId>
-			<artifactId>jbossjts</artifactId>
-			<version>4.14.0.Final</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.jbossts</groupId>
-			<artifactId>jbossjts-integration</artifactId>
-			<version>4.14.0.Final</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.stdio</groupId>
-			<artifactId>jboss-stdio</artifactId>
-			<version>1.0.0.CR3</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.threads</groupId>
-			<artifactId>jboss-threads</artifactId>
-			<version>2.0.0.CR7</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.naming</groupId>
-			<artifactId>jnpserver</artifactId>
-			<version>5.0.3.GA</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>4.1.0.Final</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.6</version>
-			<scope>test</scope>
-		</dependency>
-
+		<!-- Tests -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

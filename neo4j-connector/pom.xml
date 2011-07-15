@@ -8,24 +8,76 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.netoprise</groupId>
 	<artifactId>neo4j-connector</artifactId>
 	<packaging>rar</packaging>
-	<version>0.1-SNAPSHOT</version>
 	<url>http://repository.jboss.org</url>
 
+	<build>
+		<finalName>${artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-as</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.jboss.as</groupId>
+									<artifactId>jboss-as-dist</artifactId>
+									<version>${jbossas.version}</version>
+									<type>tar.gz</type>
+									<!--classifier> [classifier - optional] </classifier -->
+									<overWrite>false</overWrite>
+									<outputDirectory>target/servers</outputDirectory>
+									<destFileName>jbossas7</destFileName>
+									<!-- <includes>[ comma separated list of file filters ]</includes> 
+										<excludes>[ comma separated list of file filters ]</excludes> -->
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+<plugin>
+    <!-- Separates the unit tests from the integration tests. -->
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <configuration>
+       <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
+       <skip>true</skip>
+    </configuration>
+    <executions>
+       <execution>
+          <id>integration-tests</id>
+          <phase>integration-test</phase>
+          <goals>
+             <goal>test</goal>
+          </goals>
+          <configuration>
+            <!-- Never skip running the tests when the integration-test phase is invoked -->
+             <skip>false</skip>
+          </configuration>
+       </execution>
+    </executions>
+  </plugin>		</plugins>
+	</build>
 
 
 	<dependencies>
 		<dependency>
 			<groupId>com.netoprise</groupId>
 			<artifactId>neo4j-connector-api</artifactId>
-			<version>0.1-SNAPSHOT</version>
 		</dependency>
 			<dependency>
 			<groupId>com.netoprise</groupId>
 			<artifactId>neo4j-connector-impl</artifactId>
-			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- Neo4j -->
 		<dependency>
@@ -47,8 +99,31 @@
 		<dependency>
 			<groupId>org.jboss.ironjacamar</groupId>
 			<artifactId>ironjacamar-spec-api</artifactId>
-			<version>1.0.0.Beta6</version>
+			<version>1.0.0.Final</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.javaee</groupId>
+			<artifactId>jboss-transaction-api</artifactId>
+			<version>1.0.1.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Arquillian -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-arquillian-container-managed</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
