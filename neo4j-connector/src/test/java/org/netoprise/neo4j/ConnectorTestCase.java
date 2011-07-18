@@ -22,33 +22,32 @@
 package org.netoprise.neo4j;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static junit.framework.Assert.assertNotNull;
 
 import java.io.File;
-import java.util.UUID;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.controller.client.Operation;
 import org.jboss.dmr.ModelNode;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.neo4j.graphdb.GraphDatabaseService;
-
-import com.netoprise.neo4j.Neo4jManagedConnection;
-import com.netoprise.neo4j.Neo4jManagedConnectionFactory;
-import com.netoprise.neo4j.Neo4jResourceAdapter;
-import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
-import com.netoprise.neo4j.connection.Neo4JConnectionFactoryImpl;
-import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
 
 /**
  * ConnectorTestCase
@@ -57,34 +56,37 @@ import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
  */
 @RunWith(Arquillian.class)
 public class ConnectorTestCase {
-	private static Logger log = Logger.getLogger("ConnectorTestCase");
 
 	private static String deploymentName = "neo4j-connector";
 
+	   /** Resource */
+//	@Resource(mappedName = "java:/eis/Neo4j")
+//	private Neo4JConnectionFactory connectionFactory;
+
+	@Inject
+	private Neo4jClient client;
 	/**
 	 * Define the deployment
 	 * 
 	 * @return The deployment archive
 	 */
-	@Deployment
+	@Deployment(name="neo4j-connector",order=1,testable=false)
 	public static ResourceAdapterArchive createDeployment() {
 		File connector = new File("target/" + deploymentName + ".rar");
 		ResourceAdapterArchive raa = ShrinkWrap.createFromZipFile(
 				ResourceAdapterArchive.class, connector);
-		// JavaArchive ja = ShrinkWrap.create(JavaArchive.class,
-		// UUID.randomUUID().toString() + ".jar");
-		// ja.addClasses(Neo4jResourceAdapter.class,
-		// Neo4jManagedConnectionFactory.class, Neo4jManagedConnection.class,
-		// Neo4JConnectionFactory.class, Neo4JConnectionFactoryImpl.class,
-		// GraphDatabaseService.class,Neo4JConnectionImpl.class);
-		// raa.addAsLibrary(ja);
-
 		return raa;
 	}
 
-	/** Resource */
-	@Resource(mappedName = "java:/eis/ConnectorTestCase")
-	private Neo4JConnectionFactory connectionFactory;
+	   @Deployment(name="test",order=2)
+	   public static WebArchive createTestArchive() {
+	      return ShrinkWrap.create(WebArchive.class, "test.war")
+	         .addClasses(Neo4jClient.class)
+	         .addAsManifestResource(
+	            EmptyAsset.INSTANCE, 
+	            ArchivePaths.create("beans.xml")); 
+	   }
+
 
 	/**
 	 * Test Basic
@@ -94,6 +96,7 @@ public class ConnectorTestCase {
 	 */
 	@Test
 	@RunAsClient
+	@OperateOnDeployment("neo4j-connector")
 	public void testBasic() throws Throwable {
 		ModelControllerClient controllerClient = null;
 		try {
@@ -103,11 +106,12 @@ public class ConnectorTestCase {
             address.add("subsystem", "jca");
 //            address.add("security-domain", "other");
 			ModelNode operation = new ModelNode();
-			operation.get("operation").set("read-operation-names");
+			operation.get("operation").set("read-children-types");
             operation.get("address").set(address);
             // TODO - configure JCA here.
 			ModelNode result = controllerClient.execute(operation);
 			assertEquals("success", result.get("outcome").asString());
+			System.out.println("Operation result: "+result.toString());
 		} finally {
 			if (null != controllerClient) {
 				controllerClient.close();
@@ -117,6 +121,33 @@ public class ConnectorTestCase {
 //		GraphDatabaseService connection = connectionFactory.getConnection();
 //		assertNotNull(connection);
 //		connection.shutdown();
+	}
+
+	@Test
+	@OperateOnDeployment("test")
+	public void helloClient() throws Exception {
+		assertNotNull(client.getConnectionFactory());
+		System.out.println("ConnectionClass: "+client.getConnectionFactory().getClass().getName());
+		assertEquals("Hello world",client.sayHello("world"));
+	}
+	
+	@Test
+	@OperateOnDeployment("test")
+	public void listJNDI(){
+		try {
+			Context context = new InitialContext();
+			System.out.println("Context namespace: " + context.getNameInNamespace());
+			NamingEnumeration<NameClassPair> content = context.list("eis");
+			while (content.hasMoreElements()) {
+				NameClassPair nameClassPair = (NameClassPair) content
+						.nextElement();
+				System.out.println("Name :"+nameClassPair.getName()+" with type:"+nameClassPair.getClassName());
+			}
+			Object object = context.lookup("eis/Neo4j");
+			System.out.println(object.getClass().getName());
+		} catch (NamingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
