@@ -29,7 +29,7 @@ class PlatformTransactionManager extends AbstractTransactionManager {
 
 	private static final Collection<String> NAMES = Arrays.asList(
 			"java:/TransactionManager", "java:appserver/TransactionManager",
-			"java:pm/TransactionManager", "java:comp/TransactionManager");
+			"java:pm/TransactionManager", "java:comp/TransactionManager","java:jboss/TransactionManager");
 
 	private TransactionManager transactionManager;
 

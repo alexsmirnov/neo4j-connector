@@ -25,8 +25,9 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 import java.io.File;
-import java.util.logging.Logger;
 
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -40,30 +41,32 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
+import org.jboss.osgi.testing.ManifestBuilder;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.graphdb.GraphDatabaseService;
+
+import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 
 /**
- * ConnectorTestCase
+ * ConnectorTest
  * 
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class ConnectorTestCase {
+public class ConnectorTest {
 
-	private static String deploymentName = "neo4j-connector";
+	private static String deploymentName = "neo4j-connector.rar";
 
-	   /** Resource */
-//	@Resource(mappedName = "java:/eis/Neo4j")
-//	private Neo4JConnectionFactory connectionFactory;
 
 	@Inject
+	@EJB
 	private Neo4jClient client;
 	/**
 	 * Define the deployment
@@ -72,7 +75,7 @@ public class ConnectorTestCase {
 	 */
 	@Deployment(name="neo4j-connector",order=1,testable=false)
 	public static ResourceAdapterArchive createDeployment() {
-		File connector = new File("target/" + deploymentName + ".rar");
+		File connector = new File("target/" + deploymentName);
 		ResourceAdapterArchive raa = ShrinkWrap.createFromZipFile(
 				ResourceAdapterArchive.class, connector);
 		return raa;
@@ -84,9 +87,14 @@ public class ConnectorTestCase {
 	         .addClasses(Neo4jClient.class)
 	         .addAsManifestResource(
 	            EmptyAsset.INSTANCE, 
-	            ArchivePaths.create("beans.xml")); 
+	            ArchivePaths.create("beans.xml"))
+	         .addAsManifestResource(createManifest(), "MANIFEST.MF");
 	   }
 
+
+	private static Asset createManifest() {
+		return ManifestBuilder.newInstance().addManifestHeader("Dependencies", "deployment."+deploymentName+" export services");
+	}
 
 	/**
 	 * Test Basic
@@ -95,29 +103,29 @@ public class ConnectorTestCase {
 	 *                Thrown if case of an error
 	 */
 	@Test
-	@RunAsClient
-	@OperateOnDeployment("neo4j-connector")
+	@OperateOnDeployment("test")
 	public void testBasic() throws Throwable {
-		ModelControllerClient controllerClient = null;
-		try {
-			controllerClient = ModelControllerClient.Factory.create(
-					"localhost", 9999);
-			ModelNode address = new ModelNode();
-            address.add("subsystem", "jca");
-//            address.add("security-domain", "other");
-			ModelNode operation = new ModelNode();
-			operation.get("operation").set("read-children-types");
-            operation.get("address").set(address);
-            // TODO - configure JCA here.
-			ModelNode result = controllerClient.execute(operation);
-			assertEquals("success", result.get("outcome").asString());
-			System.out.println("Operation result: "+result.toString());
-		} finally {
-			if (null != controllerClient) {
-				controllerClient.close();
-			}
-		}
-//		assertNotNull(connectionFactory);
+//		ModelControllerClient controllerClient = null;
+//		try {
+//			controllerClient = ModelControllerClient.Factory.create(
+//					"localhost", 9999);
+//			ModelNode address = new ModelNode();
+//            address.add("subsystem", "jca");
+////            address.add("security-domain", "other");
+//			ModelNode operation = new ModelNode();
+//			operation.get("operation").set("read-children-types");
+//            operation.get("address").set(address);
+//            // TODO - configure JCA here.
+//			ModelNode result = controllerClient.execute(operation);
+//			assertEquals("success", result.get("outcome").asString());
+//			System.out.println("Operation result: "+result.toString());
+//		} finally {
+//			if (null != controllerClient) {
+//				controllerClient.close();
+//			}
+//		}
+		Neo4JConnectionFactory connectionFactory = client.getConnectionFactory();
+		assertNotNull(connectionFactory);
 //		GraphDatabaseService connection = connectionFactory.getConnection();
 //		assertNotNull(connection);
 //		connection.shutdown();
@@ -126,8 +134,6 @@ public class ConnectorTestCase {
 	@Test
 	@OperateOnDeployment("test")
 	public void helloClient() throws Exception {
-		assertNotNull(client.getConnectionFactory());
-		System.out.println("ConnectionClass: "+client.getConnectionFactory().getClass().getName());
 		assertEquals("Hello world",client.sayHello("world"));
 	}
 	
@@ -137,17 +143,14 @@ public class ConnectorTestCase {
 		try {
 			Context context = new InitialContext();
 			System.out.println("Context namespace: " + context.getNameInNamespace());
-			NamingEnumeration<NameClassPair> content = context.list("eis");
+			NamingEnumeration<NameClassPair> content = context.list("comp");
 			while (content.hasMoreElements()) {
 				NameClassPair nameClassPair = (NameClassPair) content
 						.nextElement();
 				System.out.println("Name :"+nameClassPair.getName()+" with type:"+nameClassPair.getClassName());
 			}
-			Object object = context.lookup("eis/Neo4j");
-			System.out.println(object.getClass().getName());
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
 }

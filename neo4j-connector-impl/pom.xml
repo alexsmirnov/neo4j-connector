@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
-			<version>1.4.M06</version>
+			<version>${neo4j.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>geronimo-jta_1.1_spec</artifactId>

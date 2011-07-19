@@ -3,6 +3,10 @@ package org.netoprise.neo4j;
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.resource.ResourceException;
+
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
 
 import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
 
@@ -18,12 +22,14 @@ public class Neo4jClient {
 	private Neo4JConnectionFactory connectionFactory;
 
 	
-	public Object getConnectionFactory() {
+	public Neo4JConnectionFactory getConnectionFactory() {
 		return connectionFactory;
 	}
 
 
-	public String sayHello(String who){
+	public String sayHello(String who) throws ResourceException{
+		GraphDatabaseService connection = connectionFactory.getConnection();
+		Node referenceNode = connection.getReferenceNode();
 		return "Hello "+who;
 	}
 
