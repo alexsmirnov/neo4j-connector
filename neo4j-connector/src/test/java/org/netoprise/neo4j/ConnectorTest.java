@@ -78,6 +78,7 @@ public class ConnectorTest {
 		File connector = new File("target/" + deploymentName);
 		ResourceAdapterArchive raa = ShrinkWrap.createFromZipFile(
 				ResourceAdapterArchive.class, connector);
+		raa.addAsManifestResource("ironjacamar.xml");
 		return raa;
 	}
 

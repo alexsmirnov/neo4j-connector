@@ -24,12 +24,13 @@
 			class-name="com.netoprise.neo4j.Neo4jManagedConnectionFactory"
 			enabled="true" jndi-name="java:/eis/Neo4j" use-java-context="true"
 			pool-name="Neo4j">
-			<config-property name="dir">/tmp/graphdb</config-property>
+			<config-property name="dir">target/graphdb</config-property>
 			<config-property name="xa">true</config-property>
 			<security>
 			    <application/>
 			</security>
 			<xa-pool>
+			    <prefill>true</prefill>
 				<max-pool-size>5</max-pool-size>
 				<min-pool-size>2</min-pool-size>
 			</xa-pool>
