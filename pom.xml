@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<arquillian.version>1.0.0.CR1</arquillian.version>
 		<jbossas.version>7.0.0.Final</jbossas.version>
-		<neo4j.version>1.4</neo4j.version>
+		<neo4j.version>1.4.1</neo4j.version>
 	</properties>
 	<modules>
 		<module>neo4j-connector-api</module>
