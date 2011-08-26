@@ -4,7 +4,7 @@
 
 	<container qualifier="jboss7" default="true">
 		<configuration>
-			<property name="jbossHome">target/servers/jboss-as-7.0.0.Final</property>
+			<property name="jbossHome">target/servers/jboss-as-7.0.1.Final</property>
 		</configuration>
         <!-- 
             [ARQ-425] config parser code not in sync with schema

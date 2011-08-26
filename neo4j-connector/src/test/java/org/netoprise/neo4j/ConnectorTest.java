@@ -48,6 +48,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -139,6 +140,7 @@ public class ConnectorTest {
 	}
 	
 	@Test
+	@Ignore
 	@OperateOnDeployment("test")
 	public void listJNDI(){
 		try {

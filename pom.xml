@@ -10,8 +10,8 @@
 	<url>http://repository.jboss.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<arquillian.version>1.0.0.CR1</arquillian.version>
-		<jbossas.version>7.0.0.Final</jbossas.version>
+		<arquillian.version>1.0.0.CR4</arquillian.version>
+		<jbossas.version>7.0.1.Final</jbossas.version>
 		<neo4j.version>1.4.1</neo4j.version>
 	</properties>
 	<modules>
