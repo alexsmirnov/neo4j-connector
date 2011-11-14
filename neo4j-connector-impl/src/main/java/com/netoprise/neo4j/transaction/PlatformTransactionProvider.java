@@ -6,7 +6,7 @@ import org.neo4j.helpers.Service;
 import org.neo4j.kernel.impl.core.KernelPanicEventGenerator;
 import org.neo4j.kernel.impl.transaction.AbstractTransactionManager;
 import org.neo4j.kernel.impl.transaction.TransactionManagerProvider;
-import org.neo4j.kernel.impl.transaction.TxFinishHook;
+import org.neo4j.kernel.impl.transaction.TxHook;
 
 /**
  * TransactionManager provider that delegates transaction management to the application server.
@@ -29,8 +29,9 @@ public class PlatformTransactionProvider extends TransactionManagerProvider {
 	@Override
 	protected AbstractTransactionManager loadTransactionManager(
 			String txLogDir, KernelPanicEventGenerator kpe,
-			TxFinishHook rollbackHook) {
+			TxHook rollbackHook) {
 		log.info("Create Platform TransactionManager wrapper");
 		return new PlatformTransactionManager();
 	}
+
 }
