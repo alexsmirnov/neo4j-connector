@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.netoprise</groupId>
 		<artifactId>neo4j-connector-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -12,7 +12,10 @@
 	<packaging>jar</packaging>
 	<url>http://repository.jboss.org</url>
 
-
+	<properties>
+		<neo4j.version>1.5</neo4j.version>
+	</properties>
+	
 	<dependencies>
 		<!-- Neo4j -->
 		<dependency>

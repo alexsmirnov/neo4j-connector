@@ -24,8 +24,8 @@ package com.netoprise.neo4j;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ConfigProperty;
@@ -71,9 +71,8 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 
 	private int connectionsCreated = 0;
 
-	/**
-	 * dir TODO: add Neo4j configuration parameters
-	 * */
+	@ConfigProperty
+	private String neo4jConfig;
 	@ConfigProperty
 	private String dir;
 	@ConfigProperty
@@ -258,7 +257,18 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 
 	private void createDatabase() {
 		if (null == database) {
-			HashMap<String, String> config = new HashMap<String, String>(2);
+			Map<String, String> config = new HashMap<String, String>();
+			// Do some double split
+			if(neo4jConfig!=null) {
+				String[] parameterPairs = neo4jConfig.split(";");
+				for(String pair : parameterPairs) {
+					int equalsPos = pair.indexOf('=');
+					String key = pair.substring(0, equalsPos);
+					String value = pair.substring(equalsPos+1);
+					config.put(key, value);
+				}
+			}
+			// XA config is always done after manual parameter passing to override it
 			if (isXa()) {
 				config.put(Config.TXMANAGER_IMPLEMENTATION,
 						PlatformTransactionProvider.JEE_JTA);
