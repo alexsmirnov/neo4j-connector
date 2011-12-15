@@ -6,7 +6,7 @@
 	<groupId>com.netoprise</groupId>
 	<artifactId>neo4j-connector-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<url>http://repository.jboss.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,18 +21,18 @@
 	</modules>
 	<dependencyManagement>
 		<dependencies>
-		<!-- project modules -->
-		    <dependency>
-		        <groupId>com.netoprise</groupId>
-		        <artifactId>neo4j-connector-api</artifactId>
-		        <version>0.1-SNAPSHOT</version>
-		    </dependency>
-		    <dependency>
-		        <groupId>com.netoprise</groupId>
-		        <artifactId>neo4j-connector-impl</artifactId>
-		        <version>0.1-SNAPSHOT</version>
-		    </dependency>
-		    <!-- JCA -->
+			<!-- project modules -->
+			<dependency>
+				<groupId>com.netoprise</groupId>
+				<artifactId>neo4j-connector-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.netoprise</groupId>
+				<artifactId>neo4j-connector-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- JCA -->
 			<dependency>
 				<groupId>org.jboss.ironjacamar</groupId>
 				<artifactId>ironjacamar-depchain</artifactId>
@@ -48,7 +48,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-						<!-- Tests -->
+			<!-- Tests -->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -61,7 +61,7 @@
 				<version>1.8.5</version>
 				<scope>test</scope>
 			</dependency>
-						<!-- Arquillian -->
+			<!-- Arquillian -->
 			<dependency>
 				<groupId>org.jboss.arquillian.junit</groupId>
 				<artifactId>arquillian-junit-container</artifactId>
@@ -119,6 +119,13 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>1.2</version>
+			</plugin>
+		</plugins>
 	</build>
 	<repositories>
 		<repository>
