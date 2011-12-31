@@ -41,6 +41,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
 import com.netoprise.neo4j.connection.Neo4JConnectionImpl;
+import com.netoprise.neo4j.connection.Neo4jConnection;
 
 /**
  * Neo4jManagedConnection
@@ -161,7 +162,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	private List<ConnectionEventListener> listeners;
 
 	/** Connection */
-	private GraphDatabaseService connection;
+	private Neo4jConnection connection;
 
 	private LocalTransaction localTransaction;
 
@@ -194,7 +195,7 @@ public class Neo4jManagedConnection implements ManagedConnection {
 	 * @throws ResourceException
 	 *             generic exception if operation fails
 	 */
-	public GraphDatabaseService getConnection(Subject subject,
+	public Neo4jConnection getConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		logwriter.append("getConnection()");
 		connection = new Neo4JConnectionImpl(this, managedConnectionFactory);

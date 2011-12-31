@@ -40,7 +40,7 @@ import com.netoprise.neo4j.Neo4jManagedConnectionFactory;
  * 
  * @version $Revision: $
  */
-public class Neo4JConnectionImpl implements GraphDatabaseService {
+public class Neo4JConnectionImpl implements Neo4jConnection {
 	/** The logger */
 	private static Logger log = Logger.getLogger("Neo4JConnectionImpl");
 
@@ -174,6 +174,12 @@ public class Neo4JConnectionImpl implements GraphDatabaseService {
 	public KernelEventHandler unregisterKernelEventHandler(
 			KernelEventHandler handler) {
 		return graphDatabase.unregisterKernelEventHandler(handler);
+	}
+
+
+	@Override
+	public void close() {
+		mc.closeHandle(this);
 	}
 
 }

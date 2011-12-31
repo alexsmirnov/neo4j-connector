@@ -41,6 +41,6 @@ public interface Neo4JConnectionFactory extends Serializable, Referenceable
     * @return Neo4JConnection instance
     * @exception ResourceException Thrown if a connection can't be obtained
     */
-   public GraphDatabaseService getConnection() throws ResourceException;
+   public Neo4jConnection getConnection() throws ResourceException;
 
 }

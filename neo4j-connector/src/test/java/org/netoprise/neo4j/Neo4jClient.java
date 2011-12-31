@@ -9,6 +9,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
 import com.netoprise.neo4j.connection.Neo4JConnectionFactory;
+import com.netoprise.neo4j.connection.Neo4jConnection;
 
 
 @Stateless
@@ -28,8 +29,9 @@ public class Neo4jClient {
 
 
 	public String sayHello(String who) throws ResourceException{
-		GraphDatabaseService connection = connectionFactory.getConnection();
+		Neo4jConnection connection = connectionFactory.getConnection();
 		Node referenceNode = connection.getReferenceNode();
+		connection.close();
 		return "Hello "+who;
 	}
 

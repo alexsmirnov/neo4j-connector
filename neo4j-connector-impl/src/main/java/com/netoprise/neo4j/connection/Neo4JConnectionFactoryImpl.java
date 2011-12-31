@@ -79,10 +79,10 @@ public class Neo4JConnectionFactoryImpl implements Neo4JConnectionFactory
     * @return Neo4JConnection instance
     * @exception ResourceException Thrown if a connection can't be obtained
     */
-   public GraphDatabaseService getConnection() throws ResourceException
+   public Neo4jConnection getConnection() throws ResourceException
    {
       log.info("getConnection()");
-      return (GraphDatabaseService)connectionManager.allocateConnection(mcf, null);
+      return (Neo4jConnection)connectionManager.allocateConnection(mcf, null);
    }
 
    /**
