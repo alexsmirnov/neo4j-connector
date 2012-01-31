@@ -80,6 +80,7 @@ public class ConnectorTest {
 		ResourceAdapterArchive raa = ShrinkWrap.createFromZipFile(
 				ResourceAdapterArchive.class, connector);
 		raa.addAsManifestResource("ironjacamar.xml");
+		raa.addAsManifestResource(ManifestBuilder.newInstance().addManifestHeader("Dependencies", "org.osgi.core export services"),"MANIFEST.MF");
 		return raa;
 	}
 

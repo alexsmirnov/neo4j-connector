@@ -9,9 +9,9 @@
 	<url>http://repository.jboss.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<arquillian.version>1.0.0.CR4</arquillian.version>
-		<jbossas.version>7.0.1.Final</jbossas.version>
-		<neo4j.version>1.5</neo4j.version>
+		<arquillian.version>1.0.0.CR7</arquillian.version>
+		<jbossas.version>7.0.2.Final</jbossas.version>
+		<neo4j.version>1.6</neo4j.version>
 	</properties>
         <scm>
                 <developerConnection>scm:git:git@github.com:alexsmirnov/neo4j-connector.git</developerConnection>
