@@ -14,6 +14,10 @@
 		<jbossas.version>7.0.1.Final</jbossas.version>
 		<neo4j.version>1.5</neo4j.version>
 	</properties>
+        <scm>
+                <developerConnection>scm:git:git@github.com:alexsmirnov/neo4j-connector.git</developerConnection>
+                <url>https://github.com/alexsmirnov/neo4j-connector.git</url>
+        </scm>
 	<modules>
 		<module>neo4j-connector-api</module>
 		<module>neo4j-connector-impl</module>
