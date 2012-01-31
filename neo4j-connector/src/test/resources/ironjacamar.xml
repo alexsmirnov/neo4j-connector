@@ -31,8 +31,8 @@
 			</security>
 			<xa-pool>
 			    <prefill>true</prefill>
-				<max-pool-size>5</max-pool-size>
 				<min-pool-size>2</min-pool-size>
+				<max-pool-size>5</max-pool-size>
 			</xa-pool>
 		</connection-definition>
 	</connection-definitions>
