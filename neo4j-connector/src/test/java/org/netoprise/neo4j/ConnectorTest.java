@@ -25,6 +25,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 import java.io.File;
+import java.util.ServiceLoader;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -108,30 +109,8 @@ public class ConnectorTest {
 	@Test
 	@OperateOnDeployment("test")
 	public void testBasic() throws Throwable {
-//		ModelControllerClient controllerClient = null;
-//		try {
-//			controllerClient = ModelControllerClient.Factory.create(
-//					"localhost", 9999);
-//			ModelNode address = new ModelNode();
-//            address.add("subsystem", "jca");
-////            address.add("security-domain", "other");
-//			ModelNode operation = new ModelNode();
-//			operation.get("operation").set("read-children-types");
-//            operation.get("address").set(address);
-//            // TODO - configure JCA here.
-//			ModelNode result = controllerClient.execute(operation);
-//			assertEquals("success", result.get("outcome").asString());
-//			System.out.println("Operation result: "+result.toString());
-//		} finally {
-//			if (null != controllerClient) {
-//				controllerClient.close();
-//			}
-//		}
 		Neo4JConnectionFactory connectionFactory = client.getConnectionFactory();
 		assertNotNull(connectionFactory);
-//		GraphDatabaseService connection = connectionFactory.getConnection();
-//		assertNotNull(connection);
-//		connection.shutdown();
 	}
 
 	@Test

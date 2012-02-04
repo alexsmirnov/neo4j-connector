@@ -149,7 +149,7 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	public ManagedConnection createManagedConnection(Subject subject,
 			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		logwriter.append("createManagedConnection()");
-		createDatabase();
+//		createDatabase();
 		connectionsCreated++;
 		return new Neo4jManagedConnection(this);
 	}
@@ -235,13 +235,12 @@ public class Neo4jManagedConnectionFactory implements ManagedConnectionFactory,
 	public void destroyManagedConnection(Neo4jManagedConnection connection) {
 		connectionsCreated--;
 		if (connectionsCreated <= 0) {
-			shutdownDatabase();
+//			shutdownDatabase();
 		}
 	}
 
 	public void start() {
-		// database = new EmbeddedGraphDatabase(ra.getDir());
-
+		createDatabase();
 	}
 
 	public void stop() {

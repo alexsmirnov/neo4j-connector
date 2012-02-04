@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.netoprise</groupId>
@@ -13,10 +14,10 @@
 		<jbossas.version>7.0.2.Final</jbossas.version>
 		<neo4j.version>1.6</neo4j.version>
 	</properties>
-        <scm>
-                <developerConnection>scm:git:git@github.com:alexsmirnov/neo4j-connector.git</developerConnection>
-                <url>https://github.com/alexsmirnov/neo4j-connector.git</url>
-        </scm>
+	<scm>
+		<developerConnection>scm:git:git@github.com:alexsmirnov/neo4j-connector.git</developerConnection>
+		<url>https://github.com/alexsmirnov/neo4j-connector.git</url>
+	</scm>
 	<modules>
 		<module>neo4j-connector-api</module>
 		<module>neo4j-connector-impl</module>
@@ -39,7 +40,7 @@
 			<dependency>
 				<groupId>org.jboss.ironjacamar</groupId>
 				<artifactId>ironjacamar-depchain</artifactId>
-				<version>1.0.0.Final</version>
+				<version>1.0.7.Final</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -120,6 +121,11 @@
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>2.3</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>1.5</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -132,8 +138,17 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>fungal</id>
-			<url>http://jesperpedersen.github.com/fungal/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+			<id>repository.jboss.com</id>
+			<name>Jboss Repository for Maven</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+			<layout>default</layout>
 		</repository>
 	</repositories>
 </project>
