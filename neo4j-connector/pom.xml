@@ -141,9 +141,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-		   <groupId>org.apache.lucene</groupId>
-		   <artifactId>lucene-core</artifactId>
-		   <version>3.5.0</version>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -168,6 +168,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-kernel</artifactId>
+			<scope>test</scope>
+			<version>${neo4j.version}</version>
 		</dependency>
 		<!-- Arquillian -->
 		<dependency>
