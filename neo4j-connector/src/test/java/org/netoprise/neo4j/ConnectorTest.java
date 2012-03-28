@@ -42,11 +42,11 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
-import org.jboss.osgi.testing.ManifestBuilder;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Ignore;
@@ -81,7 +81,7 @@ public class ConnectorTest {
 		ResourceAdapterArchive raa = ShrinkWrap.createFromZipFile(
 				ResourceAdapterArchive.class, connector);
 		raa.addAsManifestResource("ironjacamar.xml");
-		raa.addAsManifestResource(ManifestBuilder.newInstance().addManifestHeader("Dependencies", "org.osgi.core export services"),"MANIFEST.MF");
+		raa.setManifest("manifest.txt");
 		return raa;
 	}
 
@@ -97,7 +97,7 @@ public class ConnectorTest {
 
 
 	private static Asset createManifest() {
-		return ManifestBuilder.newInstance().addManifestHeader("Dependencies", "deployment."+deploymentName+" export services");
+		return new StringAsset("Manifest-Version: 1.0\nDependencies: deployment."+deploymentName+" export services\n");
 	}
 
 	/**

@@ -18,22 +18,19 @@ import org.neo4j.kernel.impl.util.StringLogger;
 @Service.Implementation(TransactionManagerProvider.class)
 public class PlatformTransactionProvider extends TransactionManagerProvider {
 	
-	private static Logger log = Logger
-	.getLogger("Neo4jTransactionManagerProvider");
 
 	public static final String JEE_JTA = "jee-jta";
 
 	public PlatformTransactionProvider() {
 		super(JEE_JTA);
-		log.info("Load PlatformTransactionManagerProvider");
 	}
 
 	@Override
-	protected AbstractTransactionManager loadTransactionManager(
+	public AbstractTransactionManager loadTransactionManager(
 			String txLogDir, KernelPanicEventGenerator kpe,
 			TxHook rollbackHook, StringLogger msgLog, FileSystemAbstraction fileSystem) {
-		log.info("Create Platform TransactionManager wrapper");
-		return new PlatformTransactionManager();
+		msgLog.logMessage("Create Platform TransactionManager wrapper");
+		return new PlatformTransactionManager(rollbackHook,msgLog);
 	}
 
 }

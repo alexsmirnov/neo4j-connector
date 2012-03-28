@@ -17,15 +17,15 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import org.neo4j.kernel.impl.transaction.AbstractTransactionManager;
+import org.neo4j.kernel.impl.transaction.TxHook;
 import org.neo4j.kernel.impl.transaction.XaDataSourceManager;
+import org.neo4j.kernel.impl.util.StringLogger;
 
 /**
  * @author asmirnov
  * 
  */
 class PlatformTransactionManager extends AbstractTransactionManager {
-	private static Logger log = Logger
-	.getLogger("Neo4jTransactionManager");
 
 	private static final Collection<String> NAMES = Arrays.asList(
 			"java:/TransactionManager", "java:appserver/TransactionManager",
@@ -33,11 +33,17 @@ class PlatformTransactionManager extends AbstractTransactionManager {
 
 	private TransactionManager transactionManager;
 
-	PlatformTransactionManager() {
+	private final TxHook rollbackHook;
+
+	private final StringLogger msgLog;
+
+	PlatformTransactionManager(TxHook rollbackHook, StringLogger msgLog) {
+		this.rollbackHook = rollbackHook;
+		this.msgLog = msgLog;
 	}
 
 	@Override
-	public void init(XaDataSourceManager xaDsManager) {
+	public void init() {
 		Context initialContext;
 		try {
 			initialContext = new InitialContext();
@@ -48,14 +54,14 @@ class PlatformTransactionManager extends AbstractTransactionManager {
 			try {
 				transactionManager = (TransactionManager) initialContext
 						.lookup(name);
-				log.info("TransactionManager found at "+name);
+				msgLog.logMessage("TransactionManager found at "+name);
 				return;
 			} catch (NamingException e) {
 				// try next
 				continue;
 			}
 		}
-		log.severe("Cannot find provided TransactionManager");
+		msgLog.logMessage("Cannot find provided TransactionManager");
 		throw new RuntimeException("Cannot find provided TransactionManager");
 	}
 
@@ -102,5 +108,17 @@ class PlatformTransactionManager extends AbstractTransactionManager {
 	@Override
 	public void stop() {
 		// Not our responsibility...
+	}
+
+	@Override
+	public void start() throws Throwable {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void shutdown() throws Throwable {
+		transactionManager = null;
+		
 	}
 }
