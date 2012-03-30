@@ -21,12 +21,44 @@
 			<groupId>org.neo4j.app</groupId>
 			<artifactId>neo4j-server</artifactId>
 			<version>${neo4j.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>neo4j</artifactId>
+					<groupId>org.neo4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>neo4j-lucene-index</artifactId>
+					<groupId>org.neo4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>neo4j-kernel</artifactId>
+					<groupId>org.neo4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jersey-server</artifactId>
+					<groupId>com.sun.jersey</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jersey-multipart</artifactId>
+					<groupId>com.sun.jersey.contribs</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j.app</groupId>
 			<artifactId>neo4j-server</artifactId>
 			<version>${neo4j.version}</version>
 			<classifier>static-web</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.netoprise</groupId>
+			<artifactId>neo4j-connector-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -91,7 +123,7 @@
 							<classifier>static-web</classifier>
 							<type>jar</type>
 						</overlay>
-						<overlay>
+<!-- 						<overlay>
 							<groupId>org.neo4j.app</groupId>
 							<artifactId>neo4j-server</artifactId>
 							<type>jar</type>
@@ -99,7 +131,7 @@
 							   <include>**/*.js</include>
 							</includes>
 						</overlay>
-					</overlays>
+ -->					</overlays>
 				</configuration>
 			</plugin>
 			<plugin>
