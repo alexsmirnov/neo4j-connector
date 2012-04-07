@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>neo4j-connector-parent</artifactId>
 		<groupId>com.netoprise</groupId>
-		<version>0.3-SNAPSHOT</version>
+		<version>0.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>neo4j-server-war</artifactId>
 	<packaging>war</packaging>
